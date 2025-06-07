@@ -38,6 +38,10 @@ poetry run flet run --web
 
 For more details on running the app, refer to the [Getting Started Guide](https://flet.dev/docs/getting-started/).
 
+When the app is running use the menu button in the top bar to open **Settings** and
+provide your API key. The key is stored locally so you don't have to re-enter it
+next time.
+
 ## Build the app
 
 ### Android
@@ -91,11 +95,12 @@ I wrote this app to learn more about Flet and LLM. Its basically  a chat app tha
 - Uses Flet for the UI
 - Uses Koboldcpp for the LLM
 - Context chat aware
+- Settings menu to store your API key
 
 ## Todos
 - [x] Bring in last messages as context
 - [ ] Markdown rendering
-- [ ] Settings menu to set LLM API
+- [x] Settings menu to set LLM API
 - [ ] Make messages editable
 - [ ] Let LLM regenerate last message
 - [ ] make it more beautiful

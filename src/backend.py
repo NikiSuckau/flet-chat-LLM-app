@@ -1,5 +1,6 @@
 import json
 import requests
+from typing import Optional
 
 
 class ChatBackend:
@@ -7,11 +8,15 @@ class ChatBackend:
 
     DEFAULT_SYSTEM_PROMPT = "Du bist ein hilfreicher Assistent."
 
-    def __init__(self, api_url: str):
+    def __init__(self, api_url: str, api_key: str = ""):
         self.api_url = api_url
+        self.api_key = api_key
         self.chat_history = [
             {"role": "system", "content": self.DEFAULT_SYSTEM_PROMPT}
         ]
+
+    def set_api_key(self, api_key: str) -> None:
+        self.api_key = api_key
 
     def add_user_message(self, text: str) -> None:
         self.chat_history.append({"role": "user", "content": text})
@@ -22,6 +27,9 @@ class ChatBackend:
     def generate_reply(self, max_tokens: int = 200, temperature: float = 0.8) -> str:
         """Generate a reply using the entire chat history."""
         try:
+            headers = {}
+            if self.api_key:
+                headers["Authorization"] = f"Bearer {self.api_key}"
             response = requests.post(
                 self.api_url,
                 json={
@@ -31,6 +39,7 @@ class ChatBackend:
                     "temperature": temperature,
                     "stream": True,
                 },
+                headers=headers,
                 timeout=120,
                 stream=True,
             )

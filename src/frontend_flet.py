@@ -1,6 +1,7 @@
 import flet as ft
 from models import Message
 from backend import ChatBackend
+from settings import SettingsManager, Settings
 
 
 class ChatMessage(ft.Row):
@@ -40,12 +41,67 @@ class ChatMessage(ft.Row):
 
 
 class FletChatApp:
-    def __init__(self, backend: ChatBackend):
+    def __init__(self, backend: ChatBackend, settings_manager: SettingsManager, settings: Settings):
         self.backend = backend
+        self.settings_manager = settings_manager
+        self.settings = settings
 
     def build(self, page: ft.Page):
         page.horizontal_alignment = ft.CrossAxisAlignment.STRETCH
         page.title = "Flet + KoboldCPP: Voller Chatkontext"
+
+        def open_settings_dialog():
+            api_input = ft.TextField(
+                label="API Key",
+                value=self.settings.api_key,
+                password=True,
+                can_reveal_password=True,
+                expand=True,
+            )
+
+            def save_clicked(e):
+                self.settings.api_key = api_input.value
+                self.backend.set_api_key(self.settings.api_key)
+                self.settings_manager.save(self.settings)
+                settings_dlg.open = False
+                page.update()
+
+            settings_dlg = ft.AlertDialog(
+                modal=True,
+                title=ft.Text("Settings"),
+                content=api_input,
+                actions=[
+                    ft.TextButton("Close", on_click=lambda e: setattr(settings_dlg, 'open', False) or page.update()),
+                    ft.ElevatedButton("Save", on_click=save_clicked),
+                ],
+                actions_alignment=ft.MainAxisAlignment.END,
+            )
+
+            page.dialog = settings_dlg
+            settings_dlg.open = True
+            page.update()
+
+        def drawer_change(e):
+            if e.control.selected_index == 0:
+                page.close(drawer)
+                open_settings_dialog()
+
+        drawer = ft.NavigationDrawer(
+            controls=[
+                ft.NavigationDrawerDestination(
+                    icon=ft.icons.SETTINGS_OUTLINED,
+                    selected_icon=ft.icons.SETTINGS,
+                    label="Settings",
+                )
+            ],
+            on_change=drawer_change,
+        )
+
+        page.appbar = ft.AppBar(
+            leading=ft.IconButton(ft.icons.MENU, on_click=lambda _: page.open(drawer)),
+            title=ft.Text("Flet + KoboldCPP: Voller Chatkontext"),
+            center_title=False,
+        )
 
         join_user_name = ft.TextField(
             label="Enter your name to join the chat",
