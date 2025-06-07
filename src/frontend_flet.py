@@ -86,8 +86,12 @@ class FletChatApp:
             ],
         )
 
+        def open_drawer():
+            drawer.selected_index = -1  # allow re-selecting same destination
+            page.open(drawer)
+
         page.appbar = ft.AppBar(
-            leading=ft.IconButton(ft.Icons.MENU, on_click=lambda _: page.open(drawer)),
+            leading=ft.IconButton(ft.Icons.MENU, on_click=lambda _: open_drawer()),
             title=ft.Text("FletChat"),
         )
 
