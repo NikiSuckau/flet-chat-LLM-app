@@ -39,13 +39,57 @@ class ChatMessage(ft.Row):
         return colors_lookup[hash(user_name) % len(colors_lookup)]
 
 
+from config import save_config
+
+
 class FletChatApp:
-    def __init__(self, backend: ChatBackend):
+    def __init__(self, backend: ChatBackend, config: dict):
         self.backend = backend
+        self.config = config
 
     def build(self, page: ft.Page):
         page.horizontal_alignment = ft.CrossAxisAlignment.STRETCH
         page.title = "Flet + KoboldCPP: Voller Chatkontext"
+
+        def open_settings_dialog():
+            api_field = ft.TextField(label="API URL", value=self.backend.api_url, width=400)
+
+            def save_click(e):
+                url = api_field.value.strip()
+                if url:
+                    self.backend.api_url = url
+                    self.config["api_url"] = url
+                    save_config(self.config)
+                settings_dlg.open = False
+                page.update()
+
+            settings_dlg = ft.AlertDialog(
+                modal=True,
+                title=ft.Text("Settings"),
+                content=api_field,
+                actions=[ft.ElevatedButton("Save", on_click=save_click)],
+                actions_alignment=ft.MainAxisAlignment.END,
+            )
+            page.dialog = settings_dlg
+            settings_dlg.open = True
+            page.update()
+
+        def drawer_change(e):
+            if e.control.selected_index == 0:
+                page.close(drawer)
+                open_settings_dialog()
+
+        drawer = ft.NavigationDrawer(
+            on_change=drawer_change,
+            controls=[
+                ft.NavigationDrawerDestination(label="Settings", icon=ft.Icons.SETTINGS),
+            ],
+        )
+
+        page.appbar = ft.AppBar(
+            leading=ft.IconButton(ft.Icons.MENU, on_click=lambda _: page.open(drawer)),
+            title=ft.Text("FletChat"),
+        )
 
         join_user_name = ft.TextField(
             label="Enter your name to join the chat",

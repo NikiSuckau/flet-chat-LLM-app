@@ -95,7 +95,7 @@ I wrote this app to learn more about Flet and LLM. Its basically  a chat app tha
 ## Todos
 - [x] Bring in last messages as context
 - [ ] Markdown rendering
-- [ ] Settings menu to set LLM API
+- [x] Settings menu to set LLM API
 - [ ] Make messages editable
 - [ ] Let LLM regenerate last message
 - [ ] make it more beautiful
