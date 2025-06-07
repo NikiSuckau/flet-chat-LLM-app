@@ -3,7 +3,8 @@ import flet as ft
 from backend import ChatBackend
 from frontend_flet import FletChatApp
 
-KOBOLDCPP_API_URL = "http://localhost:5001/v1/chat/completions"
+# KOBOLDCPP_API_URL = "http://localhost:5001/v1/chat/completions"
+KOBOLDCPP_API_URL = "http://home:5001/v1/chat/completions"
 
 backend = ChatBackend(KOBOLDCPP_API_URL)
 
