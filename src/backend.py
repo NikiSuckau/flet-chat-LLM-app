@@ -13,6 +13,10 @@ class ChatBackend:
             {"role": "system", "content": self.DEFAULT_SYSTEM_PROMPT}
         ]
 
+    def set_api_url(self, url: str) -> None:
+        """Update the KoboldCPP API endpoint."""
+        self.api_url = url
+
     def add_user_message(self, text: str) -> None:
         self.chat_history.append({"role": "user", "content": text})
 
