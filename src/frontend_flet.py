@@ -2,6 +2,7 @@ import flet as ft
 
 from backend import ChatBackend
 from models import Message
+from settings_manager import AppSettings, save_settings
 
 
 class ChatMessage(ft.Row):
@@ -49,24 +50,29 @@ class ChatMessage(ft.Row):
 
 
 class FletChatApp:
-    def __init__(self, backend: ChatBackend):
+    def __init__(self, backend: ChatBackend, settings: AppSettings):
         self.backend = backend
+        self.settings = settings
 
     def build(self, page: ft.Page):
-        def _close_drawer(e):
+        def _navigate_drawer(e):
+            if e.control.selected_index == 0:
+                show_chat()
+            elif e.control.selected_index == 1:
+                show_settings()
             page.close(drawer)
 
         drawer = ft.NavigationDrawer(
-            on_change=_close_drawer,
+            on_change=_navigate_drawer,
             controls=[
                 ft.Container(height=12),
                 ft.NavigationDrawerDestination(
-                    # icon_content=ft.Icon(ft.Icons.CHAT_OUTLINED), # gave error: No parameter named 'icon_content'
+                    icon=ft.Icons.CHAT_OUTLINED,
                     label="Chat",
                 ),
                 ft.Divider(thickness=2),
                 ft.NavigationDrawerDestination(
-                    # icon_content=ft.Icon(ft.Icons.SETTINGS_OUTLINED), # gave error: No parameter named 'icon_content'
+                    icon=ft.Icons.SETTINGS_OUTLINED,
                     label="Settings",
                 ),
             ],
@@ -112,6 +118,19 @@ class FletChatApp:
             expand=True,
             on_submit=lambda e: send_message_click(e),
         )
+
+        settings_url_field = ft.TextField(
+            label="KoboldCPP URL",
+            value=self.backend.api_url,
+            expand=True,
+        )
+
+        def save_settings_click(e):
+            self.backend.api_url = settings_url_field.value
+            self.settings.api_url = settings_url_field.value
+            save_settings(self.settings)
+            page.snack_bar = ft.SnackBar(ft.Text("Settings saved"), open=True)
+            page.update()
 
         def join_chat_click(e):
             if not join_user_name.value:
@@ -174,25 +193,55 @@ class FletChatApp:
 
             chat.controls.append(m)
             page.update()
-
         page.pubsub.subscribe(on_message)
 
-        page.add(
-            ft.Container(
-                content=chat,
-                border=ft.border.all(1, ft.Colors.OUTLINE),
-                border_radius=5,
-                padding=10,
-                expand=True,
-            ),
-            ft.Row(
-                [
-                    new_message,
-                    ft.IconButton(
-                        icon=ft.Icons.SEND_ROUNDED,
-                        tooltip="Send message",
-                        on_click=lambda e: send_message_click(e),
-                    ),
-                ]
-            ),
+        chat_view = ft.Column(
+            [
+                ft.Container(
+                    content=chat,
+                    border=ft.border.all(1, ft.Colors.OUTLINE),
+                    border_radius=5,
+                    padding=10,
+                    expand=True,
+                ),
+                ft.Row(
+                    [
+                        new_message,
+                        ft.IconButton(
+                            icon=ft.Icons.SEND_ROUNDED,
+                            tooltip="Send message",
+                            on_click=lambda e: send_message_click(e),
+                        ),
+                    ]
+                ),
+            ],
+            expand=True,
         )
+
+        settings_view = ft.Column(
+            [
+                settings_url_field,
+                ft.Row([ft.ElevatedButton("Save", on_click=save_settings_click)]),
+            ],
+            visible=False,
+            expand=True,
+        )
+
+        def show_chat():
+            chat_view.visible = True
+            settings_view.visible = False
+            drawer.selected_index = 0
+            page.appbar.title = ft.Text("Flet Chat")
+            page.update()
+
+        def show_settings():
+            settings_url_field.value = self.backend.api_url
+            chat_view.visible = False
+            settings_view.visible = True
+            drawer.selected_index = 1
+            page.appbar.title = ft.Text("Settings")
+            page.update()
+
+        page.add(chat_view, settings_view)
+
+        show_chat()
