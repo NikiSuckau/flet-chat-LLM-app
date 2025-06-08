@@ -1,108 +1,58 @@
-# FletChat app
+# LLM FlatChat
 
-## Run the app
+LLM FlatChat is a small chat client built with [Flet](https://flet.dev). It connects to a [KoboldCPP](https://github.com/LostRuins/koboldcpp) server and stores your settings locally in `settings.json`. The app lets you swap between a chat view and a settings view via the navigation drawer.
 
-### uv
+## Requirements
 
-Run as a desktop app:
+- Python 3.11+
+- Flet (installed automatically via `uv` or `poetry`)
 
-```
-uv run flet run
-```
+## Running the App
 
-Run as a web app:
+### Using uv
 
-```
-uv run flet run --web
-```
-
-### Poetry
-
-Install dependencies from `pyproject.toml`:
-
-```
-poetry install
+```bash
+uv run flet run              # Desktop
+uv run flet run --web        # Web
 ```
 
-Run as a desktop app:
+### Using Poetry
 
-```
-poetry run flet run
-```
-
-Run as a web app:
-
-```
-poetry run flet run --web
+```bash
+poetry install               # install dependencies
+poetry run flet run          # Desktop
+poetry run flet run --web    # Web
 ```
 
-For more details on running the app, refer to the [Getting Started Guide](https://flet.dev/docs/getting-started/).
+Start your KoboldCPP server first. On initial launch you will be prompted for your name. Open the settings view to change the API URL if it differs from the default. The URL is persisted in `settings.json`.
 
-## Build the app
+## Building Distributables
 
-### Android
+Flet can package the application for multiple platforms:
 
-```
-flet build apk -v
-```
-
-For more details on building and signing `.apk` or `.aab`, refer to the [Android Packaging Guide](https://flet.dev/docs/publish/android/).
-
-### iOS
-
-```
-flet build ipa -v
+```bash
+flet build apk -v       # Android
+flet build ipa -v       # iOS
+flet build macos -v     # macOS
+flet build linux -v     # Linux
+flet build windows -v   # Windows
 ```
 
-For more details on building and signing `.ipa`, refer to the [iOS Packaging Guide](https://flet.dev/docs/publish/ios/).
-
-### macOS
-
-```
-flet build macos -v
-```
-
-For more details on building macOS package, refer to the [macOS Packaging Guide](https://flet.dev/docs/publish/macos/).
-
-### Linux
-
-```
-flet build linux -v
-```
-
-For more details on building Linux package, refer to the [Linux Packaging Guide](https://flet.dev/docs/publish/linux/).
-
-### Windows
-
-```
-flet build windows -v
-```
-
-For more details on building Windows package, refer to the [Windows Packaging Guide](https://flet.dev/docs/publish/windows/).
-
-
-
---- 
-# LLM FlatChat app
-I wrote this app to learn more about Flet and LLM. Its basically  a chat app that uses LLM to generate responses. The API i use i Koboldcpp.
+See the [Flet publish guide](https://flet.dev/docs/publish/) for signing and distribution details.
 
 ## Features
-- Pretty simple so far
-- Uses Flet for the UI
-- Uses Koboldcpp for the LLM
-- Context chat aware
 
-## Todos
+- Chat with KoboldCPP via a clean Flet UI
+- Chat history context awareness
+- Persistent settings (KoboldCPP URL)
+
+## TODO
+
 - [x] Bring in last messages as context
-- [x] Settings menu to set LLM URL (KOBOLDCPP URL)
+- [x] Settings menu to set LLM URL (KoboldCPP URL)
 - [ ] Markdown rendering
 - [ ] Make messages editable
 - [ ] Let LLM regenerate last message
-- [ ] make it more beautiful
+- [ ] Improve styling
 - [ ] Long term memory
-
-
-
-
-
 
