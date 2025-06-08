@@ -44,6 +44,32 @@ class FletChatApp:
         self.backend = backend
 
     def build(self, page: ft.Page):
+        def _close_drawer(e):
+            page.close(drawer)
+
+        drawer = ft.NavigationDrawer(
+            on_change=_close_drawer,
+            controls=[
+                ft.Container(height=12),
+                ft.NavigationDrawerDestination(
+                    icon_content=ft.Icon(ft.icons.CHAT_OUTLINED),
+                    label="Chat",
+                ),
+                ft.Divider(thickness=2),
+                ft.NavigationDrawerDestination(
+                    icon_content=ft.Icon(ft.icons.SETTINGS_OUTLINED),
+                    label="Settings",
+                ),
+            ]
+        )
+
+        page.appbar = ft.AppBar(
+            leading=ft.IconButton(
+                icon=ft.icons.MENU,
+                on_click=lambda _: page.open(drawer),
+            ),
+            title=ft.Text("Flet Chat"),
+        )
         page.horizontal_alignment = ft.CrossAxisAlignment.STRETCH
         page.title = "Flet + KoboldCPP: Voller Chatkontext"
 
