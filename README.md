@@ -94,7 +94,7 @@ I wrote this app to learn more about Flet and LLM. Its basically  a chat app tha
 
 ## Todos
 - [x] Bring in last messages as context
-- [ ] Settings menu to set LLM URL (KOBOLDCPP URL)
+- [x] Settings menu to set LLM URL (KOBOLDCPP URL)
 - [ ] Markdown rendering
 - [ ] Make messages editable
 - [ ] Let LLM regenerate last message
