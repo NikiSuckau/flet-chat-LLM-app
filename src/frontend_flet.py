@@ -2,6 +2,7 @@ import flet as ft
 
 from backend import ChatBackend
 from models import Message
+from settings_manager import AppSettings, save_settings
 
 
 class ChatMessage(ft.Row):
@@ -49,8 +50,9 @@ class ChatMessage(ft.Row):
 
 
 class FletChatApp:
-    def __init__(self, backend: ChatBackend):
+    def __init__(self, backend: ChatBackend, settings: AppSettings):
         self.backend = backend
+        self.settings = settings
 
     def build(self, page: ft.Page):
         def _navigate_drawer(e):
@@ -125,6 +127,8 @@ class FletChatApp:
 
         def save_settings_click(e):
             self.backend.api_url = settings_url_field.value
+            self.settings.api_url = settings_url_field.value
+            save_settings(self.settings)
             page.snack_bar = ft.SnackBar(ft.Text("Settings saved"), open=True)
             page.update()
 
