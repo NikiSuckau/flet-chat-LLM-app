@@ -1,6 +1,7 @@
 import flet as ft
-from models import Message
+
 from backend import ChatBackend
+from models import Message
 
 
 class ChatMessage(ft.Row):
@@ -30,10 +31,18 @@ class ChatMessage(ft.Row):
     @staticmethod
     def _get_avatar_color(user_name: str):
         colors_lookup = [
-            ft.Colors.AMBER, ft.Colors.BLUE, ft.Colors.BROWN,
-            ft.Colors.CYAN, ft.Colors.GREEN, ft.Colors.INDIGO,
-            ft.Colors.LIME, ft.Colors.ORANGE, ft.Colors.PINK,
-            ft.Colors.PURPLE, ft.Colors.RED, ft.Colors.TEAL,
+            ft.Colors.AMBER,
+            ft.Colors.BLUE,
+            ft.Colors.BROWN,
+            ft.Colors.CYAN,
+            ft.Colors.GREEN,
+            ft.Colors.INDIGO,
+            ft.Colors.LIME,
+            ft.Colors.ORANGE,
+            ft.Colors.PINK,
+            ft.Colors.PURPLE,
+            ft.Colors.RED,
+            ft.Colors.TEAL,
             ft.Colors.YELLOW,
         ]
         return colors_lookup[hash(user_name) % len(colors_lookup)]
@@ -52,20 +61,20 @@ class FletChatApp:
             controls=[
                 ft.Container(height=12),
                 ft.NavigationDrawerDestination(
-                    icon_content=ft.Icon(ft.icons.CHAT_OUTLINED),
+                    # icon_content=ft.Icon(ft.Icons.CHAT_OUTLINED), # gave error: No parameter named 'icon_content'
                     label="Chat",
                 ),
                 ft.Divider(thickness=2),
                 ft.NavigationDrawerDestination(
-                    icon_content=ft.Icon(ft.icons.SETTINGS_OUTLINED),
+                    # icon_content=ft.Icon(ft.Icons.SETTINGS_OUTLINED), # gave error: No parameter named 'icon_content'
                     label="Settings",
                 ),
-            ]
+            ],
         )
 
         page.appbar = ft.AppBar(
             leading=ft.IconButton(
-                icon=ft.icons.MENU,
+                icon=ft.Icons.MENU,
                 on_click=lambda _: page.open(drawer),
             ),
             title=ft.Text("Flet Chat"),
@@ -83,7 +92,11 @@ class FletChatApp:
             modal=True,
             title=ft.Text("Welcome!"),
             content=ft.Column([join_user_name], width=300, height=70, tight=True),
-            actions=[ft.ElevatedButton(text="Join chat", on_click=lambda e: join_chat_click(e))],
+            actions=[
+                ft.ElevatedButton(
+                    text="Join chat", on_click=lambda e: join_chat_click(e)
+                )
+            ],
             actions_alignment=ft.MainAxisAlignment.END,
         )
         page.overlay.append(welcome_dlg)
