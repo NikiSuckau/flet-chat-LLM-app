@@ -76,7 +76,11 @@ class FletChatApp:
 
         def drawer_change(e):
             if e.control.selected_index == 0:
-                page.close(drawer)
+                # close drawer using API available in current Flet version
+                if hasattr(page, "close"):
+                    page.close(drawer)
+                else:
+                    page.close_drawer()
                 open_settings_dialog()
 
         drawer = ft.NavigationDrawer(
@@ -88,7 +92,10 @@ class FletChatApp:
 
         def open_drawer():
             drawer.selected_index = -1  # allow re-selecting same destination
-            page.open(drawer)
+            if hasattr(page, "open"):
+                page.open(drawer)
+            else:
+                page.show_drawer(drawer)
 
         page.appbar = ft.AppBar(
             leading=ft.IconButton(ft.Icons.MENU, on_click=lambda _: open_drawer()),
