@@ -5,23 +5,12 @@ LLM FlatChat is a small chat client built with [Flet](https://flet.dev). It conn
 ## Requirements
 
 - Python 3.11+
-- Flet (installed automatically via `uv` or `poetry`)
+- Flet (installed via `pip install flet[all]`)
 
 ## Running the App
-
-### Using uv
-
+After installing the requirements, you can run the app by executing the following command in the project directory:
 ```bash
-uv run flet run              # Desktop
-uv run flet run --web        # Web
-```
-
-### Using Poetry
-
-```bash
-poetry install               # install dependencies
-poetry run flet run          # Desktop
-poetry run flet run --web    # Web
+flet run
 ```
 
 Start your KoboldCPP server first. On initial launch you will be prompted for your name. Open the settings view to change the API URL if it differs from the default. The URL is persisted in `settings.json`.
