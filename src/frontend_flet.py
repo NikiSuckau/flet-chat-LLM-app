@@ -67,12 +67,12 @@ class FletChatApp:
             controls=[
                 ft.Container(height=12),
                 ft.NavigationDrawerDestination(
-                    # icon_content=ft.Icon(ft.Icons.CHAT_OUTLINED), # gave error: No parameter named 'icon_content'
+                    icon=ft.Icons.CHAT_OUTLINED,
                     label="Chat",
                 ),
                 ft.Divider(thickness=2),
                 ft.NavigationDrawerDestination(
-                    # icon_content=ft.Icon(ft.Icons.SETTINGS_OUTLINED), # gave error: No parameter named 'icon_content'
+                    icon=ft.Icons.SETTINGS_OUTLINED,
                     label="Settings",
                 ),
             ],
