@@ -1,6 +1,6 @@
 import flet as ft
 
-from models import Message
+from backend import Message
 
 
 class ChatMessage(ft.Row):

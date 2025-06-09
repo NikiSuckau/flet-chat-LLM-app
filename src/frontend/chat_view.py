@@ -1,7 +1,6 @@
 import flet as ft
 
-from backend import ChatBackend
-from models import Message
+from backend import ChatBackend, Message
 
 from .chat_message import ChatMessage
 
