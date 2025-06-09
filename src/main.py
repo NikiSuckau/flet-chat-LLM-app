@@ -8,6 +8,7 @@ backend = ChatBackend(settings.api_url)
 
 
 def main(page: ft.Page):
+    """Entry point for Flet when running `flet run`."""
     app = FletChatApp(backend, settings)
     app.build(page)
 

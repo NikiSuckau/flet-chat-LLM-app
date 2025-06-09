@@ -7,6 +7,7 @@ class SettingsView(ft.Column):
     """View for editing application settings."""
 
     def __init__(self, settings: AppSettings, save_callback):
+        """Create settings form and hook up save button."""
         self.settings = settings
         self.url_field = ft.TextField(
             label="KoboldCPP URL",

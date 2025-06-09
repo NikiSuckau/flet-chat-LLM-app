@@ -10,11 +10,14 @@ class FletChatApp:
     """Main Flet application class."""
 
     def __init__(self, backend: ChatBackend, settings: AppSettings):
+        """Store backend instance and loaded settings."""
         self.backend = backend
         self.settings = settings
 
     def build(self, page: ft.Page):
+        """Construct all UI controls and wire up event callbacks."""
         def _navigate_drawer(e):
+            """Handle drawer navigation between views."""
             if e.control.selected_index == 0:
                 show_chat()
             elif e.control.selected_index == 1:
@@ -60,6 +63,7 @@ class FletChatApp:
         page.overlay.append(welcome_dlg)
 
         def send_message_click(e):
+            """Send the current input box content to all clients and the LLM."""
             text = chat_view.new_message.value.strip()
             if not text:
                 return
@@ -83,6 +87,7 @@ class FletChatApp:
         chat_view = ChatView(self.backend, send_message_click)
 
         def save_settings_click(e):
+            """Persist the edited settings and notify the user."""
             self.backend.api_url = settings_view.get_url()
             self.settings.api_url = settings_view.get_url()
             save_settings(self.settings)
@@ -92,6 +97,7 @@ class FletChatApp:
         settings_view = SettingsView(self.settings, save_settings_click)
 
         def join_chat_click(e):
+            """Validate the user name and broadcast the join event."""
             if not join_user_name.value:
                 join_user_name.error_text = "Name cannot be blank!"
                 join_user_name.update()
@@ -110,12 +116,14 @@ class FletChatApp:
             page.update()
 
         def on_message(message: Message):
+            """Receive published messages and show them in the chat view."""
             chat_view.add_message(message)
             page.update()
 
         page.pubsub.subscribe(on_message)
 
         def show_chat():
+            """Display the chat view and hide the settings view."""
             chat_view.visible = True
             settings_view.visible = False
             drawer.selected_index = 0
@@ -123,6 +131,7 @@ class FletChatApp:
             page.update()
 
         def show_settings():
+            """Display the settings view and hide the chat view."""
             settings_view.set_url(self.backend.api_url)
             chat_view.visible = False
             settings_view.visible = True
