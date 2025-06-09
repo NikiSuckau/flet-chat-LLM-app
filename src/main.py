@@ -1,7 +1,7 @@
 import flet as ft
 
 from backend import ChatBackend
-from frontend_flet import FletChatApp
+from frontend import FletChatApp
 from settings_manager import load_settings
 
 settings = load_settings()
