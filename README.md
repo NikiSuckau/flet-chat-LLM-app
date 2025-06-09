@@ -1,6 +1,6 @@
 # LLM FlatChat
 
-LLM FlatChat is a small chat client built with [Flet](https://flet.dev). It connects to a [KoboldCPP](https://github.com/LostRuins/koboldcpp) server and stores your settings locally in `settings.json`. The app lets you swap between a chat view and a settings view via the navigation drawer.
+LLM FlatChat is a small chat client built with [Flet](https://flet.dev). It connects to a [KoboldCPP](https://github.com/LostRuins/koboldcpp) server and stores your settings locally in `storage/settings.json`. The app lets you swap between a chat view and a settings view via the navigation drawer.
 
 ## Requirements
 
@@ -13,7 +13,7 @@ After installing the requirements, you can run the app by executing the followin
 flet run
 ```
 
-Start your KoboldCPP server first. On initial launch you will be prompted for your name. Open the settings view to change the API URL if it differs from the default. The URL is persisted in `settings.json`.
+Start your KoboldCPP server first. On initial launch you will be prompted for your name. Open the settings view to change the API URL if it differs from the default. The URL is persisted in `storage/settings.json` and diary entries are stored in `storage/diary_entries.json`.
 
 ## Building Distributables
 
@@ -35,6 +35,7 @@ See the [Flet publish guide](https://flet.dev/docs/publish/) for signing and dis
 - Chat history context awareness
 - Persistent settings (KoboldCPP URL)
 - Simple diary to store notes
+- User data is stored under the `storage/` folder
 
 ## Code Structure
 
