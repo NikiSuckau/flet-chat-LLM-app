@@ -4,7 +4,8 @@ from backend import ChatBackend
 from models import Message
 from settings_manager import AppSettings, save_settings
 
-from .chat_message import ChatMessage
+from .chat_view import ChatView
+from .settings_view import SettingsView
 
 
 class FletChatApp:
@@ -39,10 +40,7 @@ class FletChatApp:
         )
 
         page.appbar = ft.AppBar(
-            leading=ft.IconButton(
-                icon=ft.Icons.MENU,
-                on_click=lambda _: page.open(drawer),
-            ),
+            leading=ft.IconButton(icon=ft.Icons.MENU, on_click=lambda _: page.open(drawer)),
             title=ft.Text("Flet Chat"),
         )
         page.horizontal_alignment = ft.CrossAxisAlignment.STRETCH
@@ -58,39 +56,42 @@ class FletChatApp:
             modal=True,
             title=ft.Text("Welcome!"),
             content=ft.Column([join_user_name], width=300, height=70, tight=True),
-            actions=[
-                ft.ElevatedButton(
-                    text="Join chat", on_click=lambda e: join_chat_click(e)
-                )
-            ],
+            actions=[ft.ElevatedButton(text="Join chat", on_click=lambda e: join_chat_click(e))],
             actions_alignment=ft.MainAxisAlignment.END,
         )
         page.overlay.append(welcome_dlg)
 
-        chat = ft.ListView(expand=True, spacing=10, auto_scroll=True)
-        new_message = ft.TextField(
-            hint_text="Write a message...",
-            autofocus=True,
-            shift_enter=True,
-            min_lines=1,
-            max_lines=5,
-            filled=True,
-            expand=True,
-            on_submit=lambda e: send_message_click(e),
-        )
+        def send_message_click(e):
+            text = chat_view.new_message.value.strip()
+            if not text:
+                return
 
-        settings_url_field = ft.TextField(
-            label="KoboldCPP URL",
-            value=self.backend.api_url,
-            expand=True,
-        )
+            user_name = page.session.get("user_name") or "Unknown"
+
+            page.pubsub.send_all(Message(user_name=user_name, text=text, message_type="chat_message"))
+
+            self.backend.add_user_message(text)
+
+            chat_view.new_message.value = ""
+            chat_view.new_message.focus()
+            page.update()
+
+            bot_reply = self.backend.generate_reply()
+            self.backend.add_assistant_message(bot_reply)
+
+            page.pubsub.send_all(Message(user_name="Bot", text=bot_reply, message_type="chat_message"))
+            page.update()
+
+        chat_view = ChatView(self.backend, send_message_click)
 
         def save_settings_click(e):
-            self.backend.api_url = settings_url_field.value
-            self.settings.api_url = settings_url_field.value
+            self.backend.api_url = settings_view.get_url()
+            self.settings.api_url = settings_view.get_url()
             save_settings(self.settings)
             page.snack_bar = ft.SnackBar(ft.Text("Settings saved"), open=True)
             page.update()
+
+        settings_view = SettingsView(self.settings, save_settings_click)
 
         def join_chat_click(e):
             if not join_user_name.value:
@@ -100,7 +101,7 @@ class FletChatApp:
 
             page.session.set("user_name", join_user_name.value)
             welcome_dlg.open = False
-            new_message.prefix = ft.Text(f"{join_user_name.value}: ")
+            chat_view.set_user(join_user_name.value)
             page.pubsub.send_all(
                 Message(
                     user_name=join_user_name.value,
@@ -110,83 +111,11 @@ class FletChatApp:
             )
             page.update()
 
-        def send_message_click(e):
-            text = new_message.value.strip()
-            if not text:
-                return
-
-            user_name = page.session.get("user_name") or "Unknown"
-
-            page.pubsub.send_all(
-                Message(
-                    user_name=user_name,
-                    text=text,
-                    message_type="chat_message",
-                )
-            )
-
-            self.backend.add_user_message(text)
-
-            new_message.value = ""
-            new_message.focus()
-            page.update()
-
-            bot_reply = self.backend.generate_reply()
-            self.backend.add_assistant_message(bot_reply)
-
-            page.pubsub.send_all(
-                Message(
-                    user_name="Bot",
-                    text=bot_reply,
-                    message_type="chat_message",
-                )
-            )
-            page.update()
-
         def on_message(message: Message):
-            if message.message_type == "chat_message":
-                m = ChatMessage(message)
-            elif message.message_type == "login_message":
-                m = ft.Text(message.text, italic=True, color=ft.Colors.BLACK45, size=12)
-            else:
-                return
-
-            chat.controls.append(m)
+            chat_view.add_message(message)
             page.update()
 
         page.pubsub.subscribe(on_message)
-
-        chat_view = ft.Column(
-            [
-                ft.Container(
-                    content=chat,
-                    border=ft.border.all(1, ft.Colors.OUTLINE),
-                    border_radius=5,
-                    padding=10,
-                    expand=True,
-                ),
-                ft.Row(
-                    [
-                        new_message,
-                        ft.IconButton(
-                            icon=ft.Icons.SEND_ROUNDED,
-                            tooltip="Send message",
-                            on_click=lambda e: send_message_click(e),
-                        ),
-                    ]
-                ),
-            ],
-            expand=True,
-        )
-
-        settings_view = ft.Column(
-            [
-                settings_url_field,
-                ft.Row([ft.ElevatedButton("Save", on_click=save_settings_click)]),
-            ],
-            visible=False,
-            expand=True,
-        )
 
         def show_chat():
             chat_view.visible = True
@@ -196,7 +125,7 @@ class FletChatApp:
             page.update()
 
         def show_settings():
-            settings_url_field.value = self.backend.api_url
+            settings_view.set_url(self.backend.api_url)
             chat_view.visible = False
             settings_view.visible = True
             drawer.selected_index = 1
@@ -206,3 +135,4 @@ class FletChatApp:
         page.add(chat_view, settings_view)
 
         show_chat()
+
