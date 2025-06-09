@@ -34,6 +34,7 @@ See the [Flet publish guide](https://flet.dev/docs/publish/) for signing and dis
 - Chat with KoboldCPP via a clean Flet UI
 - Chat history context awareness
 - Persistent settings (KoboldCPP URL)
+- Simple diary to store notes
 
 ## Code Structure
 
@@ -69,8 +70,8 @@ before handing control to Flet.
   - [ ] Markdown rendering
 
 - Diary functionality, to let users write and save diary entries (Can be used later on as context for the LLM through Langchain)
-  - [ ] Create diary button in navigation drawer which leads into a diary view
-  - [ ] Give diary view a text editor style to write diary entries
+  - [x] Create diary button in navigation drawer which leads into a diary view
+  - [x] Give diary view a text editor style to write diary entries
 
 - Frontend general
   - [ ] Improve styling

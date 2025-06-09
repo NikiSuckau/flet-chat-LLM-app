@@ -1,9 +1,16 @@
 import flet as ft
 
-from backend import ChatBackend, Message, AppSettings, save_settings
+from backend import (
+    ChatBackend,
+    Message,
+    AppSettings,
+    save_settings,
+    add_entry,
+)
 
 from .chat_view import ChatView
 from .settings_view import SettingsView
+from .diary_view import DiaryView
 
 
 class FletChatApp:
@@ -22,6 +29,8 @@ class FletChatApp:
                 show_chat()
             elif e.control.selected_index == 1:
                 show_settings()
+            elif e.control.selected_index == 2:
+                show_diary()
             page.close(drawer)
 
         drawer = ft.NavigationDrawer(
@@ -36,6 +45,10 @@ class FletChatApp:
                 ft.NavigationDrawerDestination(
                     icon=ft.Icons.SETTINGS_OUTLINED,
                     label="Settings",
+                ),
+                ft.NavigationDrawerDestination(
+                    icon=ft.Icons.BOOK_OUTLINED,
+                    label="Diary",
                 ),
             ],
         )
@@ -86,6 +99,16 @@ class FletChatApp:
 
         chat_view = ChatView(self.backend, send_message_click)
 
+        def save_diary_click(e):
+            """Persist a diary entry and clear the editor."""
+            text = diary_view.get_text().strip()
+            if not text:
+                return
+            add_entry(text)
+            diary_view.clear_text()
+            page.snack_bar = ft.SnackBar(ft.Text("Diary entry saved"), open=True)
+            page.update()
+
         def save_settings_click(e):
             """Persist the edited settings and notify the user."""
             self.backend.api_url = settings_view.get_url()
@@ -95,6 +118,8 @@ class FletChatApp:
             page.update()
 
         settings_view = SettingsView(self.settings, save_settings_click)
+
+        diary_view = DiaryView(save_diary_click)
 
         def join_chat_click(e):
             """Validate the user name and broadcast the join event."""
@@ -126,6 +151,7 @@ class FletChatApp:
             """Display the chat view and hide the settings view."""
             chat_view.visible = True
             settings_view.visible = False
+            diary_view.visible = False
             drawer.selected_index = 0
             page.appbar.title = ft.Text("Flet Chat")
             page.update()
@@ -134,12 +160,22 @@ class FletChatApp:
             """Display the settings view and hide the chat view."""
             settings_view.set_url(self.backend.api_url)
             chat_view.visible = False
+            diary_view.visible = False
             settings_view.visible = True
             drawer.selected_index = 1
             page.appbar.title = ft.Text("Settings")
             page.update()
 
-        page.add(chat_view, settings_view)
+        def show_diary():
+            """Display the diary editor view."""
+            chat_view.visible = False
+            settings_view.visible = False
+            diary_view.visible = True
+            drawer.selected_index = 2
+            page.appbar.title = ft.Text("Diary")
+            page.update()
+
+        page.add(chat_view, settings_view, diary_view)
 
         show_chat()
 
