@@ -9,6 +9,7 @@ class ChatView(ft.Column):
     """Main chat view containing the message list and input field."""
 
     def __init__(self, backend: ChatBackend, send_message_callback):
+        """Initialize widgets and wire up the send message callback."""
         self.backend = backend
         self.chat = ft.ListView(expand=True, spacing=10, auto_scroll=True)
         self.new_message = ft.TextField(
@@ -51,6 +52,7 @@ class ChatView(ft.Column):
 
     def add_message(self, message: Message) -> None:
         """Append a message to the chat list."""
+        # Display login events differently from regular chat messages.
         if message.message_type == "chat_message":
             control = ChatMessage(message)
         elif message.message_type == "login_message":

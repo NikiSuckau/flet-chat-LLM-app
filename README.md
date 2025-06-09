@@ -35,6 +35,22 @@ See the [Flet publish guide](https://flet.dev/docs/publish/) for signing and dis
 - Chat history context awareness
 - Persistent settings (KoboldCPP URL)
 
+## Code Structure
+
+The application code lives under the `src` folder and is split into two main
+packages:
+
+- `backend/` – Contains logic unrelated to the UI. `backend.py` stores chat
+  history and talks to the KoboldCPP API, `models.py` defines the `Message`
+  dataclass, while `settings_manager.py` loads and saves the persistent
+  `AppSettings`.
+- `frontend/` – All Flet UI components. `app.py` wires everything together,
+  `chat_view.py` displays the message list, `chat_message.py` renders individual
+  messages, and `settings_view.py` hosts the settings form.
+
+Execution begins in `main.py` which creates the backend and loads settings
+before handing control to Flet.
+
 ## TODO
 
 - [x] Bring in last messages as context
