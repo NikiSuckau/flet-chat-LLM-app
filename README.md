@@ -53,11 +53,29 @@ before handing control to Flet.
 
 ## TODO
 
-- [x] Bring in last messages as context
-- [x] Settings menu to set LLM URL (KoboldCPP URL)
-- [ ] Markdown rendering
-- [ ] Make messages editable
-- [ ] Let LLM regenerate last message
-- [ ] Improve styling
-- [ ] Long term memory
+
+- Settings menu
+  - [x] Settings menu to set LLM URL (KoboldCPP URL)
+  - [ ] Settings for LLM system prompt
+  - [ ] Settings for LLM temperature
+  - [ ] Settings for LLM max tokens
+- Chat
+  - [x] Bring in last messages as context
+  - [ ] Make past messages of LLM or user editable
+  - [ ] Let LLM regenerate last message
+  - [ ] Save chat 
+  - [ ] Long term memory via Langchain
+  - [ ] fix streaming messages, despite ```"stream": True``` in backend.py it does not work
+  - [ ] Markdown rendering
+
+- Diary functionality, to let users write and save diary entries (Can be used later on as context for the LLM through Langchain)
+  - [ ] Create diary button in navigation drawer which leads into a diary view
+  - [ ] Give diary view a text editor style to write diary entries
+
+- Frontend general
+  - [ ] Improve styling
+
+- User functionality (Needs way more thoughts and planning, e. g. how to handle multiple users, how and where to store user data, etc.)
+  - [x] User name input on first launch
+  - [ ] Change User welcome name inpput on first launch (Its temporary and not saved). Instead i would like to have a user managment system where users can log in and out. Last user is remembered.
 
