@@ -1,6 +1,6 @@
 import flet as ft
 
-from settings_manager import AppSettings
+from backend import AppSettings
 
 
 class SettingsView(ft.Column):

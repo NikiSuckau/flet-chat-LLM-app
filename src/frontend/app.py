@@ -1,8 +1,6 @@
 import flet as ft
 
-from backend import ChatBackend
-from models import Message
-from settings_manager import AppSettings, save_settings
+from backend import ChatBackend, Message, AppSettings, save_settings
 
 from .chat_view import ChatView
 from .settings_view import SettingsView

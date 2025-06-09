@@ -1,8 +1,7 @@
 import flet as ft
 
-from backend import ChatBackend
+from backend import ChatBackend, load_settings
 from frontend import FletChatApp
-from settings_manager import load_settings
 
 settings = load_settings()
 backend = ChatBackend(settings.api_url)
