@@ -32,3 +32,8 @@ logic and data handling while UI components live under `frontend/`.
 ## Pull Requests
 - Ensure the test suite passes before committing.
 - Include concise commit messages and avoid large unrelated changes.
+
+## Documentation
+Offline documentation for Flet is located under the `docs/` directory.
+These files mirror the official Flet website and should be updated
+whenever the `flet` dependency version changes.

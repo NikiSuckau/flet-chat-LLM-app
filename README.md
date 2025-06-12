@@ -64,6 +64,12 @@ pip install -e .[dev]
 python -m pytest
 ```
 
+## Documentation
+
+The `docs/` directory contains an offline copy of the official Flet
+documentation. These files were downloaded from the Flet website and
+can be consulted without internet access.
+
 ## TODO
 
 
