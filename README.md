@@ -52,6 +52,17 @@ packages:
 Execution begins in `main.py` which creates the backend and loads settings
 before handing control to Flet.
 
+## Development
+
+Development guidelines and testing instructions are described in
+[`AGENTS.md`](AGENTS.md). To run the unit tests yourself install the project with
+the optional development dependencies and execute:
+
+```bash
+pip install -e .[dev]
+python -m pytest
+```
+
 ## TODO
 
 
