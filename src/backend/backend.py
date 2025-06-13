@@ -2,6 +2,10 @@ import json
 import requests
 
 
+class ChatConnectionError(Exception):
+    """Raised when communication with the LLM server fails."""
+
+
 class ChatBackend:
     """Simple backend handling chat history and LLM interaction."""
 
@@ -26,8 +30,7 @@ class ChatBackend:
     def generate_reply(self, max_tokens: int = 200, temperature: float = 0.8) -> str:
         """Generate a reply using the entire chat history."""
         # Send the accumulated conversation to the KoboldCPP API and stream back
-        # the assistant's response. Errors are swallowed and returned as a string
-        # so the UI can display them directly.
+        # the assistant's response.
         try:
             response = requests.post(
                 self.api_url,
@@ -43,7 +46,7 @@ class ChatBackend:
             )
             response.raise_for_status()
         except requests.RequestException as ex:  # pragma: no cover - network errors
-            return f"[error connecting to KoboldCPP: {ex}]"
+            raise ChatConnectionError(str(ex)) from ex
 
         bot_reply = ""
         try:
@@ -62,6 +65,6 @@ class ChatBackend:
                     if j["choices"][0].get("finish_reason") == "stop":
                         break
         except requests.RequestException as ex:  # pragma: no cover - network errors
-            return f"[error connecting to KoboldCPP: {ex}]"
+            raise ChatConnectionError(str(ex)) from ex
         # Return the full assistant response after streaming ends
         return bot_reply

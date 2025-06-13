@@ -2,6 +2,7 @@ import flet as ft
 
 from backend import (
     ChatBackend,
+    ChatConnectionError,
     Message,
     AppSettings,
     save_settings,
@@ -91,7 +92,12 @@ class FletChatApp:
             chat_view.new_message.focus()
             page.update()
 
-            bot_reply = self.backend.generate_reply()
+            try:
+                bot_reply = self.backend.generate_reply()
+            except ChatConnectionError as ex:
+                chat_view.show_error(str(ex))
+                return
+
             self.backend.add_assistant_message(bot_reply)
 
             page.pubsub.send_all(Message(user_name="Bot", text=bot_reply, message_type="chat_message"))

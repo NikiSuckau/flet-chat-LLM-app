@@ -1,3 +1,4 @@
+import asyncio
 import flet as ft
 
 from backend import ChatBackend, Message
@@ -11,6 +12,7 @@ class ChatView(ft.Column):
     def __init__(self, backend: ChatBackend, send_message_callback):
         """Initialize widgets and wire up the send message callback."""
         self.backend = backend
+        self.error_banner = ft.Banner(bgcolor=ft.Colors.RED_300, content=ft.Text(""), actions=[])
         self.chat = ft.ListView(expand=True, spacing=10, auto_scroll=True)
         self.new_message = ft.TextField(
             hint_text="Write a message...",
@@ -45,6 +47,20 @@ class ChatView(ft.Column):
             expand=True,
             visible=True,
         )
+
+    def show_error(self, text: str) -> None:
+        """Display a temporary error banner at the top of the page."""
+        if not self.page:
+            return
+        self.error_banner.content = ft.Text(text, color=ft.Colors.WHITE)
+        self.page.banner = self.error_banner
+        self.page.open(self.error_banner)
+        self.page.run_task(self._close_banner)
+
+    async def _close_banner(self):
+        await asyncio.sleep(3)
+        if self.page:
+            self.page.close(self.error_banner)
 
     def set_user(self, user_name: str) -> None:
         """Update message prefix with the current user name."""

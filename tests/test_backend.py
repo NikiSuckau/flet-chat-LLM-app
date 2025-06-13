@@ -3,7 +3,8 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parents[1] / 'src'))
 
 import requests
-from backend import ChatBackend
+import pytest
+from backend import ChatBackend, ChatConnectionError
 
 
 def test_generate_reply_connection_error(monkeypatch):
@@ -13,5 +14,5 @@ def test_generate_reply_connection_error(monkeypatch):
     monkeypatch.setattr(requests, "post", fake_post)
     backend = ChatBackend("http://invalid")
     backend.add_user_message("hi")
-    reply = backend.generate_reply()
-    assert "error connecting" in reply
+    with pytest.raises(ChatConnectionError):
+        backend.generate_reply()
