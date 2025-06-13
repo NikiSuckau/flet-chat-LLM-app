@@ -10,6 +10,7 @@ class DiaryView(ft.Column):
             fit_parent_size=True,
             expand=True,
             placeholder_text="Write your diary entry here...",
+            text_vertical_align=ft.VerticalAlignment.START,
             autofocus=True,
         )
         super().__init__(
