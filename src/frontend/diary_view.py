@@ -5,14 +5,12 @@ class DiaryView(ft.Column):
     """Simple diary entry editor view."""
 
     def __init__(self, save_callback):
-        self.editor = ft.TextField(
+        self.editor = ft.CupertinoTextField(
             multiline=True,
-            min_lines=10,
-            max_lines=20,
+            fit_parent_size=True,
             expand=True,
-            label="Diary entry",
-            shift_enter=True,
-            autofocus=False,
+            placeholder_text="Write your diary entry here...",
+            autofocus=True,
         )
         super().__init__(
             [
