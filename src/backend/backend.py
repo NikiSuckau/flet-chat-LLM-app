@@ -38,27 +38,30 @@ class ChatBackend:
                     "temperature": temperature,
                     "stream": True,
                 },
-                timeout=120,
+                timeout=(5, 120),
                 stream=True,
             )
             response.raise_for_status()
-        except Exception as ex:  # pragma: no cover - network errors
+        except requests.RequestException as ex:  # pragma: no cover - network errors
             return f"[error connecting to KoboldCPP: {ex}]"
 
         bot_reply = ""
-        for chunk in response.iter_lines(decode_unicode=True):
-            if not chunk:
-                continue
-            if chunk.startswith("data:"):
-                json_str = chunk[len("data:"):].strip()
-                try:
-                    j = json.loads(json_str)
-                except json.JSONDecodeError:
+        try:
+            for chunk in response.iter_lines(decode_unicode=True):
+                if not chunk:
                     continue
-                delta = j["choices"][0]["delta"].get("content", "")
-                if delta:
-                    bot_reply += delta
-                if j["choices"][0].get("finish_reason") == "stop":
-                    break
+                if chunk.startswith("data:"):
+                    json_str = chunk[len("data:"):].strip()
+                    try:
+                        j = json.loads(json_str)
+                    except json.JSONDecodeError:
+                        continue
+                    delta = j["choices"][0]["delta"].get("content", "")
+                    if delta:
+                        bot_reply += delta
+                    if j["choices"][0].get("finish_reason") == "stop":
+                        break
+        except requests.RequestException as ex:  # pragma: no cover - network errors
+            return f"[error connecting to KoboldCPP: {ex}]"
         # Return the full assistant response after streaming ends
         return bot_reply
