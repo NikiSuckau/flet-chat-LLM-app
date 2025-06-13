@@ -8,7 +8,7 @@ class ChatMessage(ft.Row):
 
     def __init__(self, message: Message):
         """Create visual representation of a message for the chat list."""
-        super().__init__()
+        super().__init__(expand=True)
         self.vertical_alignment = ft.CrossAxisAlignment.START
         self.controls = [
             ft.CircleAvatar(
@@ -22,6 +22,7 @@ class ChatMessage(ft.Row):
                     ft.Text(message.text, selectable=True),
                 ],
                 tight=True,
+                expand=True,
                 spacing=5,
             ),
         ]
