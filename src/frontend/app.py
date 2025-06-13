@@ -119,7 +119,7 @@ class FletChatApp:
 
         settings_view = SettingsView(self.settings, save_settings_click)
 
-        diary_view = DiaryView(save_diary_click)
+        diary_view = DiaryView()
 
         def join_chat_click(e):
             """Validate the user name and broadcast the join event."""
@@ -152,6 +152,7 @@ class FletChatApp:
             chat_view.visible = True
             settings_view.visible = False
             diary_view.visible = False
+            page.floating_action_button = None
             drawer.selected_index = 0
             page.appbar.title = ft.Text("Flet Chat")
             page.update()
@@ -162,6 +163,7 @@ class FletChatApp:
             chat_view.visible = False
             diary_view.visible = False
             settings_view.visible = True
+            page.floating_action_button = None
             drawer.selected_index = 1
             page.appbar.title = ft.Text("Settings")
             page.update()
@@ -173,6 +175,9 @@ class FletChatApp:
             diary_view.visible = True
             drawer.selected_index = 2
             page.appbar.title = ft.Text("Diary")
+            page.floating_action_button = ft.FloatingActionButton(
+                icon=ft.Icons.SAVE, on_click=save_diary_click
+            )
             page.update()
 
         page.add(chat_view, settings_view, diary_view)
