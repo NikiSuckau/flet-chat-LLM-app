@@ -66,7 +66,7 @@ python -m pytest
 
 ## Documentation
 
-Offline documentation for Flet lives under `docs/flet-docs` and can be consulted without internet access. An empty `docs/langchain-docs` directory exists for future Langchain documentation.
+Offline documentation for Flet lives under `docs/flet-docs` and can be consulted without internet access. Langchain documentation resides under `docs/langchain-docs` and currently includes the `LangMem` module.
 
 ## TODO
 
@@ -81,7 +81,7 @@ Offline documentation for Flet lives under `docs/flet-docs` and can be consulted
   - [ ] Make past messages of LLM or user editable
   - [ ] Let LLM regenerate last message
   - [ ] Save chat 
-  - [ ] Long term memory via Langchain
+  - [ ] Long term memory via Langchain (`LangMem`)
   - [ ] fix streaming messages, despite ```"stream": True``` in backend.py it does not work
   - [ ] Markdown rendering
 
