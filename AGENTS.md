@@ -35,5 +35,5 @@ logic and data handling while UI components live under `frontend/`.
 
 ## Documentation
 Offline Flet documentation resides in `docs/flet-docs`.
-Place any Langchain-related docs under `docs/langchain-docs`.
+Place any Langchain-related docs under `docs/langchain-docs`. The repository already includes documentation for `LangMem`.
 Update the Flet docs whenever the `flet` dependency version changes.
