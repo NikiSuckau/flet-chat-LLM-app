@@ -34,6 +34,6 @@ logic and data handling while UI components live under `frontend/`.
 - Include concise commit messages and avoid large unrelated changes.
 
 ## Documentation
-Offline documentation for Flet is located under the `docs/` directory.
-These files mirror the official Flet website and should be updated
-whenever the `flet` dependency version changes.
+Offline Flet documentation resides in `docs/flet-docs`.
+Place any Langchain-related docs under `docs/langchain-docs`.
+Update the Flet docs whenever the `flet` dependency version changes.

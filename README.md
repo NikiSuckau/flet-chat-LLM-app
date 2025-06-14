@@ -66,9 +66,7 @@ python -m pytest
 
 ## Documentation
 
-The `docs/` directory contains an offline copy of the official Flet
-documentation. These files were downloaded from the Flet website and
-can be consulted without internet access.
+Offline documentation for Flet lives under `docs/flet-docs` and can be consulted without internet access. An empty `docs/langchain-docs` directory exists for future Langchain documentation.
 
 ## TODO
 
