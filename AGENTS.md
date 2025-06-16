@@ -37,3 +37,8 @@ logic and data handling while UI components live under `frontend/`.
 Offline Flet documentation resides in `docs/flet-docs`.
 Place any Langchain-related docs under `docs/langchain-docs`. The repository already includes documentation for `LangMem`.
 Update the Flet docs whenever the `flet` dependency version changes.
+
+## Diary Command Popup
+The diary view includes a popup triggered by typing a backslash. When
+modifying this feature add or update unit tests to ensure the popup shows,
+hides, and positions correctly. Update the README with any behavior changes.

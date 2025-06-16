@@ -35,6 +35,7 @@ See the [Flet publish guide](https://flet.dev/docs/publish/) for signing and dis
 - Chat history context awareness
 - Persistent settings (KoboldCPP URL)
 - Simple diary to store notes
+- Backslash-triggered command popup in the diary view
 - User data is stored under the `storage/` folder
 
 ## Code Structure
@@ -88,6 +89,7 @@ Offline documentation for Flet lives under `docs/flet-docs` and can be consulted
 - Diary functionality, to let users write and save diary entries (Can be used later on as context for the LLM through Langchain)
   - [x] Create diary button in navigation drawer which leads into a diary view
   - [x] Give diary view a text editor style to write diary entries
+  - [ ] Command popup to trigger LLM self-reflection questions
 
 - Frontend general
   - [ ] Improve styling
