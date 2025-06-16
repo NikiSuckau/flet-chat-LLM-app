@@ -36,6 +36,7 @@ See the [Flet publish guide](https://flet.dev/docs/publish/) for signing and dis
 - Persistent settings (KoboldCPP URL)
 - Simple diary to store notes
 - Backslash-triggered command popup in the diary view
+- Self-reflection question command powered by KoboldCPP
 - User data is stored under the `storage/` folder
 
 ## Code Structure

@@ -26,3 +26,17 @@ def test_popup_position_below_line():
     view._on_editor_change(DummyEvent(view.editor))
     expected_top = len(view.editor.value.splitlines()) * DiaryView.LINE_HEIGHT
     assert view.command_popup.top == expected_top
+
+
+def test_insert_question_appends_text():
+    called = []
+
+    def callback(text: str) -> str:
+        called.append(text)
+        return "What do you feel right now?"
+
+    view = DiaryView(callback)
+    view.editor.value = "Today was good"
+    view._insert_question(None)
+    assert called == ["Today was good"]
+    assert view.editor.value.endswith("What do you feel right now?")

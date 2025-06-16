@@ -1,3 +1,5 @@
+from typing import Callable, Optional
+
 import flet as ft
 
 
@@ -6,9 +8,12 @@ class DiaryView(ft.Column):
 
     LINE_HEIGHT: int = 24
 
-    def __init__(self):
+    def __init__(self, question_callback: Optional[Callable[[str], str]] = None):
+        self.question_callback = question_callback
         self.command_popup = ft.Container(
-            content=ft.Column([ft.Text("Command 1"), ft.Text("Command 2")]),
+            content=ft.Column(
+                [ft.TextButton("Self-reflection question", on_click=self._insert_question)]
+            ),
             bgcolor=ft.Colors.WHITE,
             border=ft.border.all(1, ft.Colors.OUTLINE),
             padding=10,
@@ -41,6 +46,18 @@ class DiaryView(ft.Column):
             line_count = len(e.control.value.splitlines())
             self.command_popup.top = line_count * self.LINE_HEIGHT
             self.command_popup.left = 0
+        if self.page:
+            self.update()
+
+    def _insert_question(self, e: ft.ControlEvent) -> None:
+        """Insert a generated question below the current diary text."""
+        if not self.question_callback:
+            return
+        question = self.question_callback(self.editor.value)
+        if self.editor.value and not self.editor.value.endswith("\n"):
+            self.editor.value += "\n"
+        self.editor.value += question
+        self.command_popup.visible = False
         if self.page:
             self.update()
 

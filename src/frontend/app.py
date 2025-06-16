@@ -119,7 +119,7 @@ class FletChatApp:
 
         settings_view = SettingsView(self.settings, save_settings_click)
 
-        diary_view = DiaryView()
+        diary_view = DiaryView(self.backend.generate_diary_question)
 
         def join_chat_click(e):
             """Validate the user name and broadcast the join event."""

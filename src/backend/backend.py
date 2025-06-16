@@ -62,3 +62,34 @@ class ChatBackend:
                     break
         # Return the full assistant response after streaming ends
         return bot_reply
+
+    def generate_diary_question(
+        self,
+        diary_text: str,
+        max_tokens: int = 50,
+        temperature: float = 0.7,
+    ) -> str:
+        """Generate a self-reflection question for a diary entry."""
+        prompt = (
+            "Stelle eine kurze, selbstreflektierende Frage basierend auf folgendem Tagebucheintrag:\n"
+            f"{diary_text}"
+        )
+        try:
+            response = requests.post(
+                self.api_url,
+                json={
+                    "model": "kobold_chat_v2",
+                    "messages": [
+                        {"role": "system", "content": self.DEFAULT_SYSTEM_PROMPT},
+                        {"role": "user", "content": prompt},
+                    ],
+                    "max_tokens": max_tokens,
+                    "temperature": temperature,
+                },
+                timeout=120,
+            )
+            response.raise_for_status()
+            data = response.json()
+            return data["choices"][0]["message"]["content"].strip()
+        except Exception as ex:  # pragma: no cover - network errors
+            return f"[error connecting to KoboldCPP: {ex}]"
