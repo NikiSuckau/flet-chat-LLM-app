@@ -54,6 +54,8 @@ class DiaryView(ft.Column):
         if not self.question_callback:
             return
         question = self.question_callback(self.editor.value)
+        if self.editor.value.endswith("\\"):
+            self.editor.value = self.editor.value[:-1]
         if self.editor.value and not self.editor.value.endswith("\n"):
             self.editor.value += "\n"
         self.editor.value += question

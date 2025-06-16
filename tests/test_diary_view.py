@@ -40,3 +40,13 @@ def test_insert_question_appends_text():
     view._insert_question(None)
     assert called == ["Today was good"]
     assert view.editor.value.endswith("What do you feel right now?")
+
+
+def test_insert_question_removes_backslash():
+    def callback(_: str) -> str:
+        return "Question?"
+
+    view = DiaryView(callback)
+    view.editor.value = "Entry\\"
+    view._insert_question(None)
+    assert "\\" not in view.editor.value
