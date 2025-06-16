@@ -28,12 +28,12 @@ class DiaryView(ft.Column):
             expand=True,
         )
 
-    def _on_editor_change(self, e):
-        """Show command popup when a backslash is typed."""
-        if self.editor.value.endswith("\\"):
-            self.command_popup.visible = True
-        else:
-            self.command_popup.visible = False
+    def _on_editor_change(self, e: ft.ControlEvent) -> None:
+        """Toggle command popup visibility when a backslash is typed."""
+        last_char = e.control.value[-1:] if e.control.value else ""
+        self.command_popup.visible = last_char == "\\"
+        if self.page:
+            self.update()
 
     def get_text(self) -> str:
         return self.editor.value
