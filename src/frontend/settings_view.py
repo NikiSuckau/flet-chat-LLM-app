@@ -6,8 +6,8 @@ from backend import AppSettings
 class SettingsView(ft.Column):
     """View for editing application settings."""
 
-    def __init__(self, settings: AppSettings, save_callback):
-        """Create settings form and hook up save button."""
+    def __init__(self, settings: AppSettings, save_callback) -> None:
+        """Create settings form."""
         self.settings = settings
         self.url_field = ft.TextField(
             label="KoboldCPP URL",
@@ -56,18 +56,30 @@ class SettingsView(ft.Column):
             value=str(self.settings.diary_max_tokens),
             width=150,
         )
-        super().__init__(
-            [
-                self.url_field,
+
+        chat_tile = ft.ExpansionTile(
+            title=ft.Text("Chat LLM settings"),
+            initially_expanded=False,
+            controls=[
                 self.prompt_field,
                 self.temp_slider,
                 self.tokens_field,
+            ],
+        )
+
+        diary_tile = ft.ExpansionTile(
+            title=ft.Text("Diary LLM settings"),
+            initially_expanded=False,
+            controls=[
                 self.diary_sys_field,
                 self.diary_prompt_field,
                 self.diary_temp_slider,
                 self.diary_tokens_field,
-                ft.Row([ft.ElevatedButton("Save", on_click=save_callback)]),
             ],
+        )
+
+        super().__init__(
+            [self.url_field, chat_tile, diary_tile],
             visible=False,
             expand=True,
         )

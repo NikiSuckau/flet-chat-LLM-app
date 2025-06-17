@@ -215,7 +215,9 @@ class FletChatApp:
             diary_view.visible = False
             saved_diary_view.visible = False
             settings_view.visible = True
-            page.floating_action_button = None
+            page.floating_action_button = ft.FloatingActionButton(
+                icon=ft.Icons.SAVE, on_click=save_settings_click
+            )
             drawer.selected_index = 1
             page.appbar.title = ft.Text("Settings")
             page.update()
