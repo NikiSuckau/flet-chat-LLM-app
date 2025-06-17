@@ -38,6 +38,7 @@ See the [Flet publish guide](https://flet.dev/docs/publish/) for signing and dis
 - Backslash-triggered command popup in the diary view
 - The triggering backslash is removed after executing a command
 - Self-reflection question command powered by KoboldCPP
+- View saved diary entries sorted by date
 - User data is stored under the `storage/` folder
 
 ## Code Structure
