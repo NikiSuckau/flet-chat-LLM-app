@@ -131,7 +131,21 @@ class FletChatApp:
         def save_settings_click(e):
             """Persist the edited settings and notify the user."""
             self.backend.api_url = settings_view.get_url()
+            self.backend.system_prompt = settings_view.get_system_prompt()
+            self.backend.temperature = settings_view.get_temperature()
+            self.backend.max_tokens = settings_view.get_max_tokens()
+            self.backend.diary_system_prompt = settings_view.get_diary_system_prompt()
+            self.backend.diary_prompt = settings_view.get_diary_prompt()
+            self.backend.diary_temperature = settings_view.get_diary_temperature()
+            self.backend.diary_max_tokens = settings_view.get_diary_max_tokens()
             self.settings.api_url = settings_view.get_url()
+            self.settings.system_prompt = settings_view.get_system_prompt()
+            self.settings.temperature = settings_view.get_temperature()
+            self.settings.max_tokens = settings_view.get_max_tokens()
+            self.settings.diary_system_prompt = settings_view.get_diary_system_prompt()
+            self.settings.diary_prompt = settings_view.get_diary_prompt()
+            self.settings.diary_temperature = settings_view.get_diary_temperature()
+            self.settings.diary_max_tokens = settings_view.get_diary_max_tokens()
             save_settings(self.settings)
             page.snack_bar = ft.SnackBar(ft.Text("Settings saved"), open=True)
             page.update()
@@ -190,11 +204,20 @@ class FletChatApp:
         def show_settings():
             """Display the settings view and hide the chat view."""
             settings_view.set_url(self.backend.api_url)
+            settings_view.set_system_prompt(self.backend.system_prompt)
+            settings_view.set_temperature(self.backend.temperature)
+            settings_view.set_max_tokens(self.backend.max_tokens)
+            settings_view.set_diary_system_prompt(self.backend.diary_system_prompt)
+            settings_view.set_diary_prompt(self.backend.diary_prompt)
+            settings_view.set_diary_temperature(self.backend.diary_temperature)
+            settings_view.set_diary_max_tokens(self.backend.diary_max_tokens)
             chat_view.visible = False
             diary_view.visible = False
             saved_diary_view.visible = False
             settings_view.visible = True
-            page.floating_action_button = None
+            page.floating_action_button = ft.FloatingActionButton(
+                icon=ft.Icons.SAVE, on_click=save_settings_click
+            )
             drawer.selected_index = 1
             page.appbar.title = ft.Text("Settings")
             page.update()

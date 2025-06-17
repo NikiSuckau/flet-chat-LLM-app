@@ -6,13 +6,33 @@ class ChatBackend:
     """Simple backend handling chat history and LLM interaction."""
 
     DEFAULT_SYSTEM_PROMPT = "Du bist ein hilfreicher Assistent."
+    DEFAULT_DIARY_PROMPT = (
+        "Stelle eine kurze, selbstreflektierende Frage basierend auf folgendem Tagebucheintrag:\n"
+    )
 
-    def __init__(self, api_url: str):
-        """Initialize backend with API URL and starting system prompt."""
+    def __init__(
+        self,
+        api_url: str,
+        system_prompt: str | None = None,
+        temperature: float = 0.8,
+        max_tokens: int = 200,
+        diary_system_prompt: str | None = None,
+        diary_prompt: str | None = None,
+        diary_temperature: float = 0.7,
+        diary_max_tokens: int = 50,
+    ) -> None:
+        """Initialize backend with all LLM parameters."""
         self.api_url = api_url
+        self.system_prompt = system_prompt or self.DEFAULT_SYSTEM_PROMPT
+        self.temperature = temperature
+        self.max_tokens = max_tokens
+        self.diary_system_prompt = diary_system_prompt or self.DEFAULT_SYSTEM_PROMPT
+        self.diary_prompt = diary_prompt or self.DEFAULT_DIARY_PROMPT
+        self.diary_temperature = diary_temperature
+        self.diary_max_tokens = diary_max_tokens
         # Seed conversation with a system prompt so the LLM knows how to behave
         self.chat_history = [
-            {"role": "system", "content": self.DEFAULT_SYSTEM_PROMPT}
+            {"role": "system", "content": self.system_prompt}
         ]
 
     def add_user_message(self, text: str) -> None:
@@ -23,8 +43,14 @@ class ChatBackend:
         """Append an assistant message to the in-memory history."""
         self.chat_history.append({"role": "assistant", "content": text})
 
-    def generate_reply(self, max_tokens: int = 200, temperature: float = 0.8) -> str:
+    def generate_reply(
+        self,
+        max_tokens: int | None = None,
+        temperature: float | None = None,
+    ) -> str:
         """Generate a reply using the entire chat history."""
+        max_tokens = max_tokens if max_tokens is not None else self.max_tokens
+        temperature = temperature if temperature is not None else self.temperature
         # Send the accumulated conversation to the KoboldCPP API and stream back
         # the assistant's response. Errors are swallowed and returned as a string
         # so the UI can display them directly.
@@ -66,22 +92,24 @@ class ChatBackend:
     def generate_diary_question(
         self,
         diary_text: str,
-        max_tokens: int = 50,
-        temperature: float = 0.7,
+        prompt: str | None = None,
+        max_tokens: int | None = None,
+        temperature: float | None = None,
+        system_prompt: str | None = None,
     ) -> str:
         """Generate a self-reflection question for a diary entry."""
-        prompt = (
-            "Stelle eine kurze, selbstreflektierende Frage basierend auf folgendem Tagebucheintrag:\n"
-            f"{diary_text}"
-        )
+        prompt_text = (prompt or self.diary_prompt) + f"{diary_text}"
+        max_tokens = max_tokens if max_tokens is not None else self.diary_max_tokens
+        temperature = temperature if temperature is not None else self.diary_temperature
+        system_prompt = system_prompt or self.diary_system_prompt
         try:
             response = requests.post(
                 self.api_url,
                 json={
                     "model": "kobold_chat_v2",
                     "messages": [
-                        {"role": "system", "content": self.DEFAULT_SYSTEM_PROMPT},
-                        {"role": "user", "content": prompt},
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": prompt_text},
                     ],
                     "max_tokens": max_tokens,
                     "temperature": temperature,
