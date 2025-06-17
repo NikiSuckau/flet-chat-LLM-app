@@ -78,8 +78,14 @@ class SettingsView(ft.Column):
             ],
         )
 
+        list_view = ft.ListView(
+            controls=[self.url_field, chat_tile, diary_tile],
+            expand=True,
+            spacing=10,
+        )
+
         super().__init__(
-            [self.url_field, chat_tile, diary_tile],
+            [list_view],
             visible=False,
             expand=True,
         )
