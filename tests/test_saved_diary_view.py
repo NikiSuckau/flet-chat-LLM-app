@@ -62,3 +62,19 @@ def test_confirm_delete_calls_callback():
     view._confirm_delete(None)
     assert deleted == [7]
 
+
+def test_click_ignored_when_delete_visible():
+    opened: list[DiaryEntry] = []
+
+    def _open(entry: DiaryEntry) -> None:
+        opened.append(entry)
+
+    view = SavedDiaryView(_open)
+    entry = DiaryEntry(text='baz', timestamp='2025-01-01T00:00:00', id=9)
+    view.set_entries([entry])
+    tile = view.entries.controls[0]
+    tile.on_long_press(None)
+    # Click tile while delete icon visible
+    tile.on_click(None)
+    assert opened == []
+

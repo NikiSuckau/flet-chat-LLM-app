@@ -37,13 +37,16 @@ class SavedDiaryView(ft.Column):
         for entry in sorted_entries:
             delete_btn = ft.IconButton(icon=ft.Icons.DELETE, visible=False)
             delete_btn.on_click = lambda e, entry=entry, btn=delete_btn: self._request_delete(entry, btn)
+
             tile = ft.ListTile(
                 title=ft.Text(entry.timestamp),
                 subtitle=ft.Text(entry.text, selectable=True),
                 trailing=delete_btn,
-                on_click=lambda e, entry=entry: self._open_entry(entry),
-                on_long_press=lambda e, btn=delete_btn: self._show_delete(btn),
             )
+            tile.on_click = lambda e, entry=entry, btn=delete_btn: (
+                self._open_entry(entry) if not btn.visible else None
+            )
+            tile.on_long_press = lambda e, btn=delete_btn: self._show_delete(btn)
             tiles.append(tile)
         self.entries.controls = tiles
         if self.page:
