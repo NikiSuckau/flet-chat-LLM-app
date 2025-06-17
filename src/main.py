@@ -4,7 +4,12 @@ from backend import ChatBackend, load_settings
 from frontend import FletChatApp
 
 settings = load_settings()
-backend = ChatBackend(settings.api_url)
+backend = ChatBackend(
+    settings.api_url,
+    system_prompt=settings.system_prompt,
+    temperature=settings.temperature,
+    max_tokens=settings.max_tokens,
+)
 
 
 def main(page: ft.Page):

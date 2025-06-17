@@ -131,7 +131,13 @@ class FletChatApp:
         def save_settings_click(e):
             """Persist the edited settings and notify the user."""
             self.backend.api_url = settings_view.get_url()
+            self.backend.system_prompt = settings_view.get_system_prompt()
+            self.backend.temperature = settings_view.get_temperature()
+            self.backend.max_tokens = settings_view.get_max_tokens()
             self.settings.api_url = settings_view.get_url()
+            self.settings.system_prompt = settings_view.get_system_prompt()
+            self.settings.temperature = settings_view.get_temperature()
+            self.settings.max_tokens = settings_view.get_max_tokens()
             save_settings(self.settings)
             page.snack_bar = ft.SnackBar(ft.Text("Settings saved"), open=True)
             page.update()
@@ -190,6 +196,9 @@ class FletChatApp:
         def show_settings():
             """Display the settings view and hide the chat view."""
             settings_view.set_url(self.backend.api_url)
+            settings_view.set_system_prompt(self.backend.system_prompt)
+            settings_view.set_temperature(self.backend.temperature)
+            settings_view.set_max_tokens(self.backend.max_tokens)
             chat_view.visible = False
             diary_view.visible = False
             saved_diary_view.visible = False
