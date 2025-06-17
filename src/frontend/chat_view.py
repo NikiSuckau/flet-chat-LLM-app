@@ -1,6 +1,6 @@
 import flet as ft
 
-from backend import ChatBackend, Message
+from backend import AppSettings, ChatBackend, Message
 
 from .chat_message import ChatMessage
 
@@ -8,9 +8,10 @@ from .chat_message import ChatMessage
 class ChatView(ft.Column):
     """Main chat view containing the message list and input field."""
 
-    def __init__(self, backend: ChatBackend, send_message_callback):
+    def __init__(self, backend: ChatBackend, send_message_callback, settings: AppSettings):
         """Initialize widgets and wire up the send message callback."""
         self.backend = backend
+        self.settings = settings
         self.chat = ft.ListView(expand=True, spacing=10, auto_scroll=True)
         self.new_message = ft.TextField(
             hint_text="Write a message...",
@@ -45,6 +46,7 @@ class ChatView(ft.Column):
             expand=True,
             visible=True,
         )
+        self.set_user(self.settings.user_name)
 
     def set_user(self, user_name: str) -> None:
         """Update message prefix with the current user name."""
@@ -52,14 +54,13 @@ class ChatView(ft.Column):
 
     def add_message(self, message: Message) -> None:
         """Append a message to the chat list."""
-        # Display login events differently from regular chat messages.
-        if message.message_type == "chat_message":
-            control = ChatMessage(message)
-        elif message.message_type == "login_message":
-            control = ft.Text(
-                message.text, italic=True, color=ft.Colors.BLACK45, size=12
-            )
-        else:
+        if message.message_type != "chat_message":
             return
+        color = (
+            self.settings.avatar_color
+            if message.user_name != "Bot"
+            else ft.Colors.GREY_300
+        )
+        control = ChatMessage(message, color)
         self.chat.controls.append(control)
 

@@ -1,4 +1,4 @@
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 import json
 import os
 
@@ -20,6 +20,8 @@ class AppSettings:
     diary_prompt: str = ChatBackend.DEFAULT_DIARY_PROMPT
     diary_temperature: float = 0.7
     diary_max_tokens: int = 50
+    user_name: str = "User"
+    avatar_color: str = "blue"
 
 
 def load_settings(path: str = SETTINGS_FILE) -> AppSettings:
@@ -31,7 +33,9 @@ def load_settings(path: str = SETTINGS_FILE) -> AppSettings:
         try:
             with open(path, "r", encoding="utf-8") as f:
                 data = json.load(f)
-            return AppSettings(**data)
+            defaults = asdict(AppSettings())
+            defaults.update(data)
+            return AppSettings(**defaults)
         except Exception:
             pass
     return AppSettings()

@@ -9,6 +9,25 @@ class SettingsView(ft.Column):
     def __init__(self, settings: AppSettings, save_callback) -> None:
         """Create settings form."""
         self.settings = settings
+        self.user_field = ft.TextField(
+            label="User Name",
+            value=self.settings.user_name,
+            expand=True,
+        )
+        self.color_dropdown = ft.Dropdown(
+            label="Avatar Color",
+            options=[
+                ft.dropdown.Option("amber"),
+                ft.dropdown.Option("blue"),
+                ft.dropdown.Option("cyan"),
+                ft.dropdown.Option("green"),
+                ft.dropdown.Option("orange"),
+                ft.dropdown.Option("pink"),
+                ft.dropdown.Option("purple"),
+                ft.dropdown.Option("red"),
+            ],
+            value=self.settings.avatar_color,
+        )
         self.url_field = ft.TextField(
             label="KoboldCPP URL",
             value=self.settings.api_url,
@@ -79,7 +98,13 @@ class SettingsView(ft.Column):
         )
 
         list_view = ft.ListView(
-            controls=[self.url_field, chat_tile, diary_tile],
+            controls=[
+                self.user_field,
+                self.color_dropdown,
+                self.url_field,
+                chat_tile,
+                diary_tile,
+            ],
             expand=True,
             spacing=10,
         )
@@ -159,4 +184,20 @@ class SettingsView(ft.Column):
     def set_diary_max_tokens(self, value: int) -> None:
         """Update diary max tokens field."""
         self.diary_tokens_field.value = str(value)
+
+    def get_user_name(self) -> str:
+        """Return the configured user name."""
+        return self.user_field.value
+
+    def set_user_name(self, name: str) -> None:
+        """Update the user name field."""
+        self.user_field.value = name
+
+    def get_avatar_color(self) -> str:
+        """Return the selected avatar color."""
+        return self.color_dropdown.value or "blue"
+
+    def set_avatar_color(self, color: str) -> None:
+        """Update the avatar color dropdown."""
+        self.color_dropdown.value = color
 

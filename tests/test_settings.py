@@ -17,6 +17,8 @@ def test_load_settings_defaults(tmp_path):
     assert settings.diary_prompt == ChatBackend.DEFAULT_DIARY_PROMPT
     assert settings.diary_temperature == 0.7
     assert settings.diary_max_tokens == 50
+    assert settings.user_name == "User"
+    assert settings.avatar_color == "blue"
 
 
 def test_save_and_load_settings(tmp_path):
@@ -30,6 +32,8 @@ def test_save_and_load_settings(tmp_path):
         diary_prompt='dp',
         diary_temperature=0.6,
         diary_max_tokens=75,
+        user_name="Alice",
+        avatar_color="red",
     )
     save_settings(settings, path)
     loaded = load_settings(path)

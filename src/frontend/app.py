@@ -72,20 +72,7 @@ class FletChatApp:
         page.horizontal_alignment = ft.CrossAxisAlignment.STRETCH
         page.title = "Flet + KoboldCPP: Voller Chatkontext"
 
-        join_user_name = ft.TextField(
-            label="Enter your name to join the chat",
-            autofocus=True,
-            on_submit=lambda e: join_chat_click(e),
-        )
-        welcome_dlg = ft.AlertDialog(
-            open=True,
-            modal=True,
-            title=ft.Text("Welcome!"),
-            content=ft.Column([join_user_name], width=300, height=70, tight=True),
-            actions=[ft.ElevatedButton(text="Join chat", on_click=lambda e: join_chat_click(e))],
-            actions_alignment=ft.MainAxisAlignment.END,
-        )
-        page.overlay.append(welcome_dlg)
+
 
         def send_message_click(e):
             """Send the current input box content to all clients and the LLM."""
@@ -93,10 +80,9 @@ class FletChatApp:
             if not text:
                 return
 
-            user_name = page.session.get("user_name") or "Unknown"
+            user_name = self.settings.user_name
 
-            page.pubsub.send_all(Message(user_name=user_name, text=text, message_type="chat_message"))
-
+            chat_view.add_message(Message(user_name=user_name, text=text, message_type="chat_message"))
             self.backend.add_user_message(text)
 
             chat_view.new_message.value = ""
@@ -106,10 +92,10 @@ class FletChatApp:
             bot_reply = self.backend.generate_reply()
             self.backend.add_assistant_message(bot_reply)
 
-            page.pubsub.send_all(Message(user_name="Bot", text=bot_reply, message_type="chat_message"))
+            chat_view.add_message(Message(user_name="Bot", text=bot_reply, message_type="chat_message"))
             page.update()
 
-        chat_view = ChatView(self.backend, send_message_click)
+        chat_view = ChatView(self.backend, send_message_click, self.settings)
 
         def save_diary_click(e):
             """Persist a new or edited diary entry."""
@@ -138,6 +124,8 @@ class FletChatApp:
             self.backend.diary_prompt = settings_view.get_diary_prompt()
             self.backend.diary_temperature = settings_view.get_diary_temperature()
             self.backend.diary_max_tokens = settings_view.get_diary_max_tokens()
+            self.settings.user_name = settings_view.get_user_name()
+            self.settings.avatar_color = settings_view.get_avatar_color()
             self.settings.api_url = settings_view.get_url()
             self.settings.system_prompt = settings_view.get_system_prompt()
             self.settings.temperature = settings_view.get_temperature()
@@ -146,6 +134,7 @@ class FletChatApp:
             self.settings.diary_prompt = settings_view.get_diary_prompt()
             self.settings.diary_temperature = settings_view.get_diary_temperature()
             self.settings.diary_max_tokens = settings_view.get_diary_max_tokens()
+            chat_view.set_user(self.settings.user_name)
             save_settings(self.settings)
             page.snack_bar = ft.SnackBar(ft.Text("Settings saved"), open=True)
             page.update()
@@ -164,31 +153,6 @@ class FletChatApp:
 
         saved_diary_view = SavedDiaryView(open_saved_entry, delete_saved_entry)
 
-        def join_chat_click(e):
-            """Validate the user name and broadcast the join event."""
-            if not join_user_name.value:
-                join_user_name.error_text = "Name cannot be blank!"
-                join_user_name.update()
-                return
-
-            page.session.set("user_name", join_user_name.value)
-            welcome_dlg.open = False
-            chat_view.set_user(join_user_name.value)
-            page.pubsub.send_all(
-                Message(
-                    user_name=join_user_name.value,
-                    text=f"{join_user_name.value} has joined the chat.",
-                    message_type="login_message",
-                )
-            )
-            page.update()
-
-        def on_message(message: Message):
-            """Receive published messages and show them in the chat view."""
-            chat_view.add_message(message)
-            page.update()
-
-        page.pubsub.subscribe(on_message)
 
         def show_chat():
             """Display the chat view and hide the settings view."""
@@ -211,6 +175,8 @@ class FletChatApp:
             settings_view.set_diary_prompt(self.backend.diary_prompt)
             settings_view.set_diary_temperature(self.backend.diary_temperature)
             settings_view.set_diary_max_tokens(self.backend.diary_max_tokens)
+            settings_view.set_user_name(self.settings.user_name)
+            settings_view.set_avatar_color(self.settings.avatar_color)
             chat_view.visible = False
             diary_view.visible = False
             saved_diary_view.visible = False

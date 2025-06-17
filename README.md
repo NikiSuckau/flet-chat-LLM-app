@@ -13,7 +13,7 @@ After installing the requirements, you can run the app by executing the followin
 flet run
 ```
 
-Start your KoboldCPP server first. On initial launch you will be prompted for your name. Open the settings view to change the API URL if it differs from the default. The URL is persisted in `storage/settings.json` and diary entries are stored in `storage/diary.db`.
+Start your KoboldCPP server first. Open the settings view to enter your name above the KoboldCPP URL and adjust the API endpoint if needed. The URL is persisted in `storage/settings.json` and diary entries are stored in `storage/diary.db`.
 
 ## Building Distributables
 
@@ -101,7 +101,6 @@ Offline documentation for Flet lives under `docs/flet-docs` and can be consulted
 - Frontend general
   - [ ] Improve styling
 
-- User functionality (Needs way more thoughts and planning, e. g. how to handle multiple users, how and where to store user data, etc.)
-  - [x] User name input on first launch
-  - [ ] Change User welcome name inpput on first launch (Its temporary and not saved). Instead i would like to have a user managment system where users can log in and out. Last user is remembered.
+- User functionality
+  - [x] User name stored in settings
 
