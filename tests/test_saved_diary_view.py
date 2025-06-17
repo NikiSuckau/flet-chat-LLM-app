@@ -63,6 +63,17 @@ def test_confirm_delete_calls_callback():
     assert deleted == [7]
 
 
+def test_delete_button_opens_dialog():
+    view = SavedDiaryView()
+    entry = DiaryEntry(text='bar', timestamp='2025-01-01T00:00:00', id=7)
+    view.set_entries([entry])
+    tile = view.entries.controls[0]
+    delete_btn = tile.trailing
+    tile.on_long_press(None)
+    delete_btn.on_click(None)
+    assert view._pending_delete is not None
+
+
 def test_click_ignored_when_delete_visible():
     opened: list[DiaryEntry] = []
 

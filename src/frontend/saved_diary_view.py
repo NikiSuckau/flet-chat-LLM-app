@@ -43,8 +43,10 @@ class SavedDiaryView(ft.Column):
                 subtitle=ft.Text(entry.text, selectable=True),
                 trailing=delete_btn,
             )
-            tile.on_click = lambda e, entry=entry, btn=delete_btn: (
-                self._open_entry(entry) if not btn.visible else None
+            tile.on_click = lambda e, entry=entry, btn=delete_btn, t=tile: (
+                self._open_entry(entry)
+                if getattr(e, "control", t) is t and not btn.visible
+                else None
             )
             tile.on_long_press = lambda e, btn=delete_btn: self._show_delete(btn)
             tiles.append(tile)
