@@ -66,9 +66,7 @@ class SavedDiaryView(ft.Column):
     def _request_delete(self, entry: DiaryEntry, button: ft.IconButton) -> None:
         self._pending_delete = (entry, button)
         if self.page:
-            self.page.dialog = self.confirm_dialog
-            self.confirm_dialog.open = True
-            self.page.update()
+            self.page.open(self.confirm_dialog)
 
     def _confirm_delete(self, e: ft.ControlEvent) -> None:
         if not self._pending_delete:
@@ -76,18 +74,20 @@ class SavedDiaryView(ft.Column):
         entry, button = self._pending_delete
         if self.delete_callback and entry.id is not None:
             self.delete_callback(entry.id)
-        self.confirm_dialog.open = False
+        if self.page:
+            self.page.close(self.confirm_dialog)
+        else:
+            self.confirm_dialog.open = False
         button.visible = False
         self._pending_delete = None
-        if self.page:
-            self.page.update()
 
     def _cancel_delete(self, e: ft.ControlEvent) -> None:
         if self._pending_delete:
             _, button = self._pending_delete
             button.visible = False
         self._pending_delete = None
-        self.confirm_dialog.open = False
         if self.page:
-            self.page.update()
+            self.page.close(self.confirm_dialog)
+        else:
+            self.confirm_dialog.open = False
 
