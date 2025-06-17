@@ -9,6 +9,10 @@ backend = ChatBackend(
     system_prompt=settings.system_prompt,
     temperature=settings.temperature,
     max_tokens=settings.max_tokens,
+    diary_system_prompt=settings.diary_system_prompt,
+    diary_prompt=settings.diary_prompt,
+    diary_temperature=settings.diary_temperature,
+    diary_max_tokens=settings.diary_max_tokens,
 )
 
 

@@ -32,12 +32,40 @@ class SettingsView(ft.Column):
             value=str(self.settings.max_tokens),
             width=150,
         )
+        self.diary_sys_field = ft.TextField(
+            label="Diary System Prompt",
+            multiline=True,
+            value=self.settings.diary_system_prompt,
+            expand=True,
+        )
+        self.diary_prompt_field = ft.TextField(
+            label="Diary Prompt",
+            multiline=True,
+            value=self.settings.diary_prompt,
+            expand=True,
+        )
+        self.diary_temp_slider = ft.Slider(
+            min=0.0,
+            max=1.0,
+            divisions=10,
+            value=self.settings.diary_temperature,
+            label="{value}",
+        )
+        self.diary_tokens_field = ft.TextField(
+            label="Diary Max Tokens",
+            value=str(self.settings.diary_max_tokens),
+            width=150,
+        )
         super().__init__(
             [
                 self.url_field,
                 self.prompt_field,
                 self.temp_slider,
                 self.tokens_field,
+                self.diary_sys_field,
+                self.diary_prompt_field,
+                self.diary_temp_slider,
+                self.diary_tokens_field,
                 ft.Row([ft.ElevatedButton("Save", on_click=save_callback)]),
             ],
             visible=False,
@@ -78,4 +106,39 @@ class SettingsView(ft.Column):
     def set_max_tokens(self, value: int) -> None:
         """Update the max tokens text field."""
         self.tokens_field.value = str(value)
+
+    def get_diary_system_prompt(self) -> str:
+        """Return the diary system prompt."""
+        return self.diary_sys_field.value
+
+    def set_diary_system_prompt(self, text: str) -> None:
+        """Update the diary system prompt."""
+        self.diary_sys_field.value = text
+
+    def get_diary_prompt(self) -> str:
+        """Return the diary prompt."""
+        return self.diary_prompt_field.value
+
+    def set_diary_prompt(self, text: str) -> None:
+        """Update the diary prompt field."""
+        self.diary_prompt_field.value = text
+
+    def get_diary_temperature(self) -> float:
+        """Return diary temperature."""
+        return float(self.diary_temp_slider.value)
+
+    def set_diary_temperature(self, value: float) -> None:
+        """Update diary temperature slider."""
+        self.diary_temp_slider.value = value
+
+    def get_diary_max_tokens(self) -> int:
+        """Return diary max tokens."""
+        try:
+            return int(self.diary_tokens_field.value)
+        except ValueError:
+            return 0
+
+    def set_diary_max_tokens(self, value: int) -> None:
+        """Update diary max tokens field."""
+        self.diary_tokens_field.value = str(value)
 

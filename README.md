@@ -33,11 +33,12 @@ See the [Flet publish guide](https://flet.dev/docs/publish/) for signing and dis
 
 - Chat with KoboldCPP via a clean Flet UI
 - Chat history context awareness
-- Persistent settings (KoboldCPP URL)
+- Persistent settings (KoboldCPP URL and LLM parameters)
 - Simple diary stored in an SQLite database
 - Backslash-triggered command popup in the diary view
 - The triggering backslash is removed after executing a command
 - Self-reflection question command powered by KoboldCPP
+- Configurable self-reflection prompts and parameters
 - View saved diary entries sorted by date
 - Tap a saved entry to reopen and edit it
  - Delete saved entries with a long press and confirmation popup
@@ -79,9 +80,10 @@ Offline documentation for Flet lives under `docs/flet-docs` and can be consulted
 
 - Settings menu
   - [x] Settings menu to set LLM URL (KoboldCPP URL)
-  - [ ] Settings for LLM system prompt
-  - [ ] Settings for LLM temperature
-  - [ ] Settings for LLM max tokens
+  - [x] Settings for LLM system prompt
+  - [x] Settings for LLM temperature
+  - [x] Settings for LLM max tokens
+  - [x] Diary question prompt and parameters
 - Chat
   - [x] Bring in last messages as context
   - [ ] Make past messages of LLM or user editable
@@ -94,7 +96,7 @@ Offline documentation for Flet lives under `docs/flet-docs` and can be consulted
 - Diary functionality, to let users write and save diary entries (Can be used later on as context for the LLM through Langchain)
   - [x] Create diary button in navigation drawer which leads into a diary view
   - [x] Give diary view a text editor style to write diary entries
-  - [ ] Command popup to trigger LLM self-reflection questions
+  - [x] Command popup to trigger LLM self-reflection questions
 
 - Frontend general
   - [ ] Improve styling

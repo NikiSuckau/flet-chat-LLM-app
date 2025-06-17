@@ -16,6 +16,10 @@ class AppSettings:
     system_prompt: str = ChatBackend.DEFAULT_SYSTEM_PROMPT
     temperature: float = 0.8
     max_tokens: int = 200
+    diary_system_prompt: str = ChatBackend.DEFAULT_SYSTEM_PROMPT
+    diary_prompt: str = ChatBackend.DEFAULT_DIARY_PROMPT
+    diary_temperature: float = 0.7
+    diary_max_tokens: int = 50
 
 
 def load_settings(path: str = SETTINGS_FILE) -> AppSettings:

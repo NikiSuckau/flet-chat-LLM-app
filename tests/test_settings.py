@@ -13,6 +13,10 @@ def test_load_settings_defaults(tmp_path):
     assert settings.system_prompt == ChatBackend.DEFAULT_SYSTEM_PROMPT
     assert settings.temperature == 0.8
     assert settings.max_tokens == 200
+    assert settings.diary_system_prompt == ChatBackend.DEFAULT_SYSTEM_PROMPT
+    assert settings.diary_prompt == ChatBackend.DEFAULT_DIARY_PROMPT
+    assert settings.diary_temperature == 0.7
+    assert settings.diary_max_tokens == 50
 
 
 def test_save_and_load_settings(tmp_path):
@@ -22,6 +26,10 @@ def test_save_and_load_settings(tmp_path):
         system_prompt='hello',
         temperature=0.5,
         max_tokens=150,
+        diary_system_prompt='dsp',
+        diary_prompt='dp',
+        diary_temperature=0.6,
+        diary_max_tokens=75,
     )
     save_settings(settings, path)
     loaded = load_settings(path)
