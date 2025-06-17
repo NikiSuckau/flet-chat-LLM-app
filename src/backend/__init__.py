@@ -1,7 +1,7 @@
 from .backend import ChatBackend
 from .models import Message
 from .settings_manager import AppSettings, load_settings, save_settings
-from .diary_manager import DiaryEntry, add_entry, load_entries
+from .diary_manager import DiaryEntry, add_entry, load_entries, update_entry
 
 __all__ = [
     "ChatBackend",
@@ -12,4 +12,5 @@ __all__ = [
     "DiaryEntry",
     "add_entry",
     "load_entries",
+    "update_entry",
 ]

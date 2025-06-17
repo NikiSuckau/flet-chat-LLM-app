@@ -19,3 +19,17 @@ def test_entries_sorted_descending():
     assert first.title.value == '2024-01-02T09:00:00'
     assert first.subtitle.value == 'new'
 
+
+def test_click_calls_open_callback():
+    captured: list[DiaryEntry] = []
+
+    def _open(entry: DiaryEntry) -> None:
+        captured.append(entry)
+
+    view = SavedDiaryView(_open)
+    entry = DiaryEntry(text='foo', timestamp='2025-01-01T00:00:00', id=1)
+    view.set_entries([entry])
+    # Simulate user click
+    view.entries.controls[0].on_click(None)
+    assert captured[0] == entry
+

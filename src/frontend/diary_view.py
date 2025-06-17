@@ -1,5 +1,7 @@
 from typing import Callable, Optional
 
+from backend import DiaryEntry
+
 import flet as ft
 
 
@@ -10,6 +12,8 @@ class DiaryView(ft.Column):
 
     def __init__(self, question_callback: Optional[Callable[[str], str]] = None):
         self.question_callback = question_callback
+        self.current_entry_id: int | None = None
+        self.current_entry_timestamp: str | None = None
         self.command_popup = ft.Container(
             content=ft.Column(
                 [ft.TextButton("Self-reflection question", on_click=self._insert_question)]
@@ -68,3 +72,14 @@ class DiaryView(ft.Column):
 
     def clear_text(self) -> None:
         self.editor.value = ""
+        self.current_entry_id = None
+        self.current_entry_timestamp = None
+
+    def set_entry(self, entry: "DiaryEntry") -> None:
+        """Load a diary entry for editing."""
+
+        self.editor.value = entry.text
+        self.current_entry_id = entry.id
+        self.current_entry_timestamp = entry.timestamp
+        if self.page:
+            self.update()

@@ -39,6 +39,7 @@ See the [Flet publish guide](https://flet.dev/docs/publish/) for signing and dis
 - The triggering backslash is removed after executing a command
 - Self-reflection question command powered by KoboldCPP
 - View saved diary entries sorted by date
+- Tap a saved entry to reopen and edit it
 - User data is stored under the `storage/` folder
 
 ## Code Structure

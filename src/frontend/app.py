@@ -1,12 +1,14 @@
 import flet as ft
 
 from backend import (
-    ChatBackend,
-    Message,
     AppSettings,
+    ChatBackend,
+    DiaryEntry,
+    Message,
     add_entry,
     load_entries,
     save_settings,
+    update_entry,
 )
 
 from .chat_view import ChatView
@@ -32,6 +34,7 @@ class FletChatApp:
             elif e.control.selected_index == 1:
                 show_settings()
             elif e.control.selected_index == 2:
+                diary_view.clear_text()
                 show_diary()
             elif e.control.selected_index == 3:
                 show_saved()
@@ -108,12 +111,19 @@ class FletChatApp:
         chat_view = ChatView(self.backend, send_message_click)
 
         def save_diary_click(e):
-            """Persist a diary entry and clear the editor."""
+            """Persist a new or edited diary entry."""
+
             text = diary_view.get_text().strip()
             if not text:
                 return
-            add_entry(text)
+
+            if diary_view.current_entry_id is None:
+                add_entry(text)
+            else:
+                update_entry(diary_view.current_entry_id, text)
+
             diary_view.clear_text()
+            saved_diary_view.set_entries(load_entries())
             page.snack_bar = ft.SnackBar(ft.Text("Diary entry saved"), open=True)
             page.update()
 
@@ -128,7 +138,12 @@ class FletChatApp:
         settings_view = SettingsView(self.settings, save_settings_click)
 
         diary_view = DiaryView(self.backend.generate_diary_question)
-        saved_diary_view = SavedDiaryView()
+
+        def open_saved_entry(entry: DiaryEntry) -> None:
+            diary_view.set_entry(entry)
+            show_diary()
+
+        saved_diary_view = SavedDiaryView(open_saved_entry)
 
         def join_chat_click(e):
             """Validate the user name and broadcast the join event."""
