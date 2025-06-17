@@ -1,10 +1,10 @@
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass
 from datetime import datetime
-import json
 import os
+import sqlite3
 
 DIARY_DIR = "storage"
-DIARY_FILE = os.path.join(DIARY_DIR, "diary_entries.json")
+DIARY_DB = os.path.join(DIARY_DIR, "diary.db")
 
 
 @dataclass
@@ -13,26 +13,33 @@ class DiaryEntry:
     text: str
     timestamp: str
 
+def _ensure_table(conn: sqlite3.Connection) -> None:
+    conn.execute(
+        """CREATE TABLE IF NOT EXISTS entries (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        text TEXT NOT NULL,
+        timestamp TEXT NOT NULL
+    )"""
+    )
 
-def load_entries(path: str = DIARY_FILE) -> list[DiaryEntry]:
-    """Load all diary entries from JSON file."""
+
+def load_entries(path: str = DIARY_DB) -> list[DiaryEntry]:
+    """Load all diary entries from the SQLite database."""
     os.makedirs(os.path.dirname(path), exist_ok=True)
-    if os.path.isfile(path):
-        try:
-            with open(path, "r", encoding="utf-8") as f:
-                data = json.load(f)
-            return [DiaryEntry(**d) for d in data]
-        except Exception:
-            pass
-    return []
+    conn = sqlite3.connect(path)
+    _ensure_table(conn)
+    rows = conn.execute("SELECT text, timestamp FROM entries ORDER BY id").fetchall()
+    conn.close()
+    return [DiaryEntry(text=row[0], timestamp=row[1]) for row in rows]
 
 
-def add_entry(text: str, path: str = DIARY_FILE) -> DiaryEntry:
-    """Append a new diary entry and persist it."""
-    entries = load_entries(path)
-    entry = DiaryEntry(text=text, timestamp=datetime.now().isoformat(timespec="seconds"))
-    entries.append(entry)
+def add_entry(text: str, path: str = DIARY_DB) -> DiaryEntry:
+    """Append a new diary entry and persist it in SQLite."""
     os.makedirs(os.path.dirname(path), exist_ok=True)
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump([asdict(e) for e in entries], f, indent=2)
-    return entry
+    conn = sqlite3.connect(path)
+    _ensure_table(conn)
+    timestamp = datetime.now().isoformat(timespec="seconds")
+    conn.execute("INSERT INTO entries (text, timestamp) VALUES (?, ?)", (text, timestamp))
+    conn.commit()
+    conn.close()
+    return DiaryEntry(text=text, timestamp=timestamp)

@@ -6,7 +6,7 @@ from backend import add_entry, load_entries, DiaryEntry
 
 
 def test_add_and_load_entries(tmp_path):
-    path = tmp_path / 'diary.json'
+    path = tmp_path / 'diary.db'
     entry = add_entry('hello', path)
     assert entry.text == 'hello'
     assert isinstance(entry.timestamp, str)

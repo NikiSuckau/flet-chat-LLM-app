@@ -13,7 +13,7 @@ After installing the requirements, you can run the app by executing the followin
 flet run
 ```
 
-Start your KoboldCPP server first. On initial launch you will be prompted for your name. Open the settings view to change the API URL if it differs from the default. The URL is persisted in `storage/settings.json` and diary entries are stored in `storage/diary_entries.json`.
+Start your KoboldCPP server first. On initial launch you will be prompted for your name. Open the settings view to change the API URL if it differs from the default. The URL is persisted in `storage/settings.json` and diary entries are stored in `storage/diary.db`.
 
 ## Building Distributables
 
@@ -34,7 +34,7 @@ See the [Flet publish guide](https://flet.dev/docs/publish/) for signing and dis
 - Chat with KoboldCPP via a clean Flet UI
 - Chat history context awareness
 - Persistent settings (KoboldCPP URL)
-- Simple diary to store notes
+- Simple diary stored in an SQLite database
 - Backslash-triggered command popup in the diary view
 - The triggering backslash is removed after executing a command
 - Self-reflection question command powered by KoboldCPP

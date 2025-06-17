@@ -25,7 +25,7 @@ logic and data handling while UI components live under `frontend/`.
   ```bash
   python -m pytest
   ```
-- Tests must not read or write the real `settings.json` or `diary_entries.json`.
+- Tests must not read or write the real `settings.json` or `diary.db`.
   Use `tmp_path` or other temporary locations when working with those files.
 - All code changes should be covered by unit tests when feasible.
 
