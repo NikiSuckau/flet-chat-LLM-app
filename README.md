@@ -40,6 +40,7 @@ See the [Flet publish guide](https://flet.dev/docs/publish/) for signing and dis
 - Self-reflection question command powered by KoboldCPP
 - View saved diary entries sorted by date
 - Tap a saved entry to reopen and edit it
+- Delete saved entries with a long press
 - User data is stored under the `storage/` folder
 
 ## Code Structure

@@ -6,6 +6,7 @@ from backend import (
     DiaryEntry,
     Message,
     add_entry,
+    delete_entry,
     load_entries,
     save_settings,
     update_entry,
@@ -143,7 +144,11 @@ class FletChatApp:
             diary_view.set_entry(entry)
             show_diary()
 
-        saved_diary_view = SavedDiaryView(open_saved_entry)
+        def delete_saved_entry(entry_id: int) -> None:
+            delete_entry(entry_id)
+            saved_diary_view.set_entries(load_entries())
+
+        saved_diary_view = SavedDiaryView(open_saved_entry, delete_saved_entry)
 
         def join_chat_click(e):
             """Validate the user name and broadcast the join event."""

@@ -33,3 +33,32 @@ def test_click_calls_open_callback():
     view.entries.controls[0].on_click(None)
     assert captured[0] == entry
 
+
+def test_long_press_shows_delete_button():
+    view = SavedDiaryView()
+    entry = DiaryEntry(text='foo', timestamp='2025-01-01T00:00:00', id=1)
+    view.set_entries([entry])
+    tile = view.entries.controls[0]
+    delete_btn = tile.trailing
+    assert delete_btn.visible is False
+    # Simulate long press
+    tile.on_long_press(None)
+    assert delete_btn.visible is True
+
+
+def test_confirm_delete_calls_callback():
+    deleted: list[int] = []
+
+    def _delete(entry_id: int) -> None:
+        deleted.append(entry_id)
+
+    view = SavedDiaryView(delete_callback=_delete)
+    entry = DiaryEntry(text='bar', timestamp='2025-01-01T00:00:00', id=7)
+    view.set_entries([entry])
+    tile = view.entries.controls[0]
+    delete_btn = tile.trailing
+    tile.on_long_press(None)
+    view._request_delete(entry, delete_btn)
+    view._confirm_delete(None)
+    assert deleted == [7]
+

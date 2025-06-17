@@ -64,3 +64,13 @@ def update_entry(entry_id: int, text: str, path: str = DIARY_DB) -> DiaryEntry:
     ).fetchone()
     conn.close()
     return DiaryEntry(text=row[1], timestamp=row[2], id=row[0])
+
+
+def delete_entry(entry_id: int, path: str = DIARY_DB) -> None:
+    """Remove a diary entry by its identifier."""
+
+    conn = sqlite3.connect(path)
+    _ensure_table(conn)
+    conn.execute("DELETE FROM entries WHERE id=?", (entry_id,))
+    conn.commit()
+    conn.close()
