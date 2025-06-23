@@ -1,4 +1,5 @@
 from .backend import ChatBackend
+from .memory_agent import LangMemAgent
 from .models import Message
 from .settings_manager import AppSettings, load_settings, save_settings
 from .diary_manager import (
@@ -20,4 +21,5 @@ __all__ = [
     "load_entries",
     "delete_entry",
     "update_entry",
+    "LangMemAgent",
 ]

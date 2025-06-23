@@ -1,6 +1,8 @@
 import json
 import requests
 
+from .memory_agent import LangMemAgent
+
 
 class ChatBackend:
     """Simple backend handling chat history and LLM interaction."""
@@ -20,6 +22,7 @@ class ChatBackend:
         diary_prompt: str | None = None,
         diary_temperature: float = 0.7,
         diary_max_tokens: int = 50,
+        memory_agent: LangMemAgent | None = None,
     ) -> None:
         """Initialize backend with all LLM parameters."""
         self.api_url = api_url
@@ -30,6 +33,7 @@ class ChatBackend:
         self.diary_prompt = diary_prompt or self.DEFAULT_DIARY_PROMPT
         self.diary_temperature = diary_temperature
         self.diary_max_tokens = diary_max_tokens
+        self.memory_agent = memory_agent or LangMemAgent()
         # Seed conversation with a system prompt so the LLM knows how to behave
         self.chat_history = [
             {"role": "system", "content": self.system_prompt}
@@ -38,6 +42,7 @@ class ChatBackend:
     def add_user_message(self, text: str) -> None:
         """Append a user message to the in-memory history."""
         self.chat_history.append({"role": "user", "content": text})
+        self.memory_agent.save(text)
 
     def add_assistant_message(self, text: str) -> None:
         """Append an assistant message to the in-memory history."""
