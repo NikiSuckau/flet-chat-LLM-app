@@ -1,6 +1,6 @@
 # LLM FlatChat
 
-LLM FlatChat is a small chat client built with [Flet](https://flet.dev). It connects to a [KoboldCPP](https://github.com/LostRuins/koboldcpp) server and stores your settings locally in `storage/settings.json`. The app lets you swap between a chat view and a settings view via the navigation drawer.
+LLM FlatChat is a small chat client built with [Flet](https://flet.dev). It connects to a [KoboldCPP](https://github.com/LostRuins/koboldcpp) server and stores your settings locally in `storage/settings.json`. The navigation drawer lets you switch between chat, settings, diary, saved entries and a memories view that shows long-term memories from your conversations.
 
 ## Requirements
 
@@ -89,7 +89,7 @@ Offline documentation for Flet lives under `docs/flet-docs` and can be consulted
   - [ ] Make past messages of LLM or user editable
   - [ ] Let LLM regenerate last message
   - [ ] Save chat 
-  - [ ] Long term memory via Langchain (`LangMem`)
+  - [x] Long term memory via Langchain (`LangMem`)
   - [ ] fix streaming messages, despite ```"stream": True``` in backend.py it does not work
   - [ ] Markdown rendering
 

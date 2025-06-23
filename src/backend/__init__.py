@@ -8,6 +8,7 @@ from .diary_manager import (
     load_entries,
     update_entry,
 )
+from .memory_agent import LangMemAgent, MemoryRecord
 
 __all__ = [
     "ChatBackend",
@@ -20,4 +21,6 @@ __all__ = [
     "load_entries",
     "delete_entry",
     "update_entry",
+    "LangMemAgent",
+    "MemoryRecord",
 ]

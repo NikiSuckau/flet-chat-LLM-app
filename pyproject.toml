@@ -10,6 +10,7 @@ authors = [
 dependencies = [
     "flet==0.28.3",
     "requests>=2.31",
+    "langmem>=0.0.27",
 ]
 
 [tool.flet]
@@ -34,6 +35,7 @@ path = "src"
 dev-dependencies = [
     "flet[all]==0.28.3",
     "requests>=2.31",
+    "langmem>=0.0.27",
 ]
 
 [tool.poetry]
@@ -42,3 +44,4 @@ package-mode = false
 [tool.poetry.group.dev.dependencies]
 flet = {extras = ["all"], version = "0.28.3"}
 requests = ">=2.31"
+langmem = ">=0.0.27"

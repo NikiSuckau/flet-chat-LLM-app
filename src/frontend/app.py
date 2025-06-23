@@ -16,6 +16,7 @@ from .chat_view import ChatView
 from .settings_view import SettingsView
 from .diary_view import DiaryView
 from .saved_diary_view import SavedDiaryView
+from .memories_view import MemoriesView
 
 
 class FletChatApp:
@@ -39,6 +40,8 @@ class FletChatApp:
                 show_diary()
             elif e.control.selected_index == 3:
                 show_saved()
+            elif e.control.selected_index == 4:
+                show_memories()
             page.close(drawer)
 
         drawer = ft.NavigationDrawer(
@@ -61,6 +64,10 @@ class FletChatApp:
                 ft.NavigationDrawerDestination(
                     icon=ft.Icons.SAVE_OUTLINED,
                     label="Saved",
+                ),
+                ft.NavigationDrawerDestination(
+                    icon=ft.Icons.MEMORY,
+                    label="Memories",
                 ),
             ],
         )
@@ -152,6 +159,7 @@ class FletChatApp:
             saved_diary_view.set_entries(load_entries())
 
         saved_diary_view = SavedDiaryView(open_saved_entry, delete_saved_entry)
+        memories_view = MemoriesView()
 
 
         def show_chat():
@@ -213,7 +221,24 @@ class FletChatApp:
             page.floating_action_button = None
             page.update()
 
-        page.add(chat_view, settings_view, diary_view, saved_diary_view)
+        def show_memories():
+            """Display stored memories."""
+            chat_view.visible = False
+            settings_view.visible = False
+            diary_view.visible = False
+            saved_diary_view.visible = False
+            memories_view.visible = True
+            memories_view.set_memories(
+                self.backend.memory_agent.list_memories(self.settings.user_name)
+                if self.backend.memory_agent
+                else []
+            )
+            drawer.selected_index = 4
+            page.appbar.title = ft.Text("Memories")
+            page.floating_action_button = None
+            page.update()
+
+        page.add(chat_view, settings_view, diary_view, saved_diary_view, memories_view)
 
         show_chat()
 
