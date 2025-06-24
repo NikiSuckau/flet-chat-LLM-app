@@ -90,7 +90,7 @@ Offline documentation for Flet lives under `docs/flet-docs` and can be consulted
   - [ ] Let LLM regenerate last message
   - [ ] Save chat 
   - [ ] Long term memory via Langchain (`LangMem`)
-  - [ ] fix streaming messages, despite ```"stream": True``` in backend.py it does not work
+  - [x] fix streaming messages, despite ```"stream": True``` in backend.py it does not work
   - [ ] Read and print which model is available (```curl http://localhost:5001/v1/models``` gives a list of available models)
   - [ ] Markdown rendering
 

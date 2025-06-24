@@ -52,10 +52,10 @@ class ChatView(ft.Column):
         """Update message prefix with the current user name."""
         self.new_message.prefix = ft.Text(f"{user_name}: ")
 
-    def add_message(self, message: Message) -> None:
-        """Append a message to the chat list."""
+    def add_message(self, message: Message) -> ChatMessage | None:
+        """Append a message to the chat list and return the UI control."""
         if message.message_type != "chat_message":
-            return
+            return None
         color = (
             self.settings.avatar_color
             if message.user_name != "Bot"
@@ -63,4 +63,4 @@ class ChatView(ft.Column):
         )
         control = ChatMessage(message, color)
         self.chat.controls.append(control)
-
+        return control

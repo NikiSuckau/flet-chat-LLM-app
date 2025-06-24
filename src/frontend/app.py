@@ -89,11 +89,17 @@ class FletChatApp:
             chat_view.new_message.focus()
             page.update()
 
-            bot_reply = self.backend.generate_reply()
-            self.backend.add_assistant_message(bot_reply)
-
-            chat_view.add_message(Message(user_name="Bot", text=bot_reply, message_type="chat_message"))
+            bot_message = Message(user_name="Bot", text="", message_type="chat_message")
+            msg_control = chat_view.add_message(bot_message)
             page.update()
+
+            bot_reply = ""
+            for delta in self.backend.stream_reply():
+                bot_reply += delta
+                msg_control.text_control.value = bot_reply
+                page.update()
+
+            self.backend.add_assistant_message(bot_reply)
 
         chat_view = ChatView(self.backend, send_message_click, self.settings)
 
