@@ -35,7 +35,7 @@ See the [Flet publish guide](https://flet.dev/docs/publish/) for signing and dis
 - Chat history context awareness
 - Persistent settings (KoboldCPP URL and LLM parameters)
 - Simple diary stored in an SQLite database
-- Button-triggered command popup in the diary view
+- Diary view bottom bar with command and save buttons
 - Self-reflection question command powered by KoboldCPP
 - Configurable self-reflection prompts and parameters
 - View saved diary entries sorted by date

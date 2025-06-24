@@ -146,7 +146,10 @@ class FletChatApp:
 
         settings_view = SettingsView(self.settings, save_settings_click)
 
-        diary_view = DiaryView(self.backend.generate_diary_question)
+        diary_view = DiaryView(
+            self.backend.generate_diary_question,
+            save_diary_click,
+        )
 
         def open_saved_entry(entry: DiaryEntry) -> None:
             diary_view.set_entry(entry)
@@ -201,9 +204,7 @@ class FletChatApp:
             diary_view.visible = True
             drawer.selected_index = 2
             page.appbar.title = ft.Text("Diary")
-            page.floating_action_button = ft.FloatingActionButton(
-                icon=ft.Icons.SAVE, on_click=save_diary_click
-            )
+            page.floating_action_button = None
             page.update()
 
         def show_saved():

@@ -9,9 +9,15 @@ class DiaryView(ft.Column):
     """Full-screen diary entry editor view."""
 
     POPUP_BOTTOM: int = 70
+    BUTTONS_BOTTOM: int = 10
 
-    def __init__(self, question_callback: Optional[Callable[[str], str]] = None):
+    def __init__(
+        self,
+        question_callback: Optional[Callable[[str], str]] = None,
+        save_callback: Optional[Callable[[ft.ControlEvent], None]] = None,
+    ) -> None:
         self.question_callback = question_callback
+        self.save_callback = save_callback
         self.current_entry_id: int | None = None
         self.current_entry_timestamp: str | None = None
         self.command_popup = ft.Container(
@@ -27,14 +33,25 @@ class DiaryView(ft.Column):
             right=0,
             alignment=ft.alignment.bottom_center,
         )
+        self.left_button = ft.FloatingActionButton(mini=True, icon=ft.Icons.CIRCLE)
         self.command_button = ft.FloatingActionButton(
             icon=ft.Icons.QUESTION_MARK_ROUNDED,
             on_click=self._toggle_popup,
+            width=60,
+            height=60,
         )
-        self.command_button.bottom = 10
-        self.command_button.left = 0
-        self.command_button.right = 0
-        self.command_button.alignment = ft.alignment.bottom_center
+        self.save_button = ft.FloatingActionButton(icon=ft.Icons.SAVE, on_click=save_callback)
+        self.button_row = ft.Container(
+            content=ft.Row(
+                [self.left_button, self.command_button, self.save_button],
+                alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+                vertical_alignment=ft.CrossAxisAlignment.END,
+            ),
+            padding=ft.padding.symmetric(horizontal=10),
+            bottom=self.BUTTONS_BOTTOM,
+            left=0,
+            right=0,
+        )
         self.editor = ft.TextField(
             multiline=True,
             expand=True,
@@ -44,7 +61,7 @@ class DiaryView(ft.Column):
             autofocus=True,
             border=ft.InputBorder.NONE,
         )
-        self.stack = ft.Stack([self.editor, self.command_popup, self.command_button], expand=True)
+        self.stack = ft.Stack([self.editor, self.command_popup, self.button_row], expand=True)
         super().__init__(
             [self.stack],
             visible=False,
