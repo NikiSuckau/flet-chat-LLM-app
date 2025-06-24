@@ -104,3 +104,10 @@ Offline documentation for Flet lives under `docs/flet-docs` and can be consulted
 - User functionality
   - [x] User name stored in settings
 
+## Bugs users found
+
+- Chat 
+  - [ ] Chat messages are not correctly displayed if being long. We need to wrap them at the end of the display
+- Diary
+  - [ ] Self-reflection question popup via typing "\" does not work if there is text in lines below the cursor
+  - [ ] Self-reflection question popup does show if the text is very long
