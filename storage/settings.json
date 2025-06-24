@@ -1,10 +1,12 @@
 {
-  "api_url": "http://phone:5001/v1/chat/completions",
+  "api_url": "http://localhost:5001/v1/chat/completions",
   "system_prompt": "Du bist ein hilfreicher Assistent.",
   "temperature": 0.8,
   "max_tokens": 200,
   "diary_system_prompt": "Du bist ein hilfreicher Assistent.",
   "diary_prompt": "Stelle eine kurze, selbstreflektierende Frage basierend auf folgendem Tagebucheintrag:",
   "diary_temperature": 0.7,
-  "diary_max_tokens": 50
+  "diary_max_tokens": 50,
+  "user_name": "User",
+  "avatar_color": "blue"
 }
