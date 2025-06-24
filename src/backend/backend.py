@@ -43,17 +43,14 @@ class ChatBackend:
         """Append an assistant message to the in-memory history."""
         self.chat_history.append({"role": "assistant", "content": text})
 
-    def generate_reply(
+    def stream_reply(
         self,
         max_tokens: int | None = None,
         temperature: float | None = None,
-    ) -> str:
-        """Generate a reply using the entire chat history."""
+    ):
+        """Yield assistant reply tokens as they arrive from the API."""
         max_tokens = max_tokens if max_tokens is not None else self.max_tokens
         temperature = temperature if temperature is not None else self.temperature
-        # Send the accumulated conversation to the KoboldCPP API and stream back
-        # the assistant's response. Errors are swallowed and returned as a string
-        # so the UI can display them directly.
         try:
             response = requests.post(
                 self.api_url,
@@ -69,9 +66,9 @@ class ChatBackend:
             )
             response.raise_for_status()
         except Exception as ex:  # pragma: no cover - network errors
-            return f"[error connecting to KoboldCPP: {ex}]"
+            yield f"[error connecting to KoboldCPP: {ex}]"
+            return
 
-        bot_reply = ""
         for chunk in response.iter_lines(decode_unicode=True):
             if not chunk:
                 continue
@@ -83,11 +80,17 @@ class ChatBackend:
                     continue
                 delta = j["choices"][0]["delta"].get("content", "")
                 if delta:
-                    bot_reply += delta
+                    yield delta
                 if j["choices"][0].get("finish_reason") == "stop":
                     break
-        # Return the full assistant response after streaming ends
-        return bot_reply
+
+    def generate_reply(
+        self,
+        max_tokens: int | None = None,
+        temperature: float | None = None,
+    ) -> str:
+        """Return the full assistant reply after streaming completes."""
+        return "".join(self.stream_reply(max_tokens=max_tokens, temperature=temperature))
 
     def generate_diary_question(
         self,
