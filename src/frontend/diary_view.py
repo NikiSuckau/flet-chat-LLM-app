@@ -8,7 +8,7 @@ import flet as ft
 class DiaryView(ft.Column):
     """Full-screen diary entry editor view."""
 
-    LINE_HEIGHT: int = 24
+    POPUP_BOTTOM: int = 70
 
     def __init__(self, question_callback: Optional[Callable[[str], str]] = None):
         self.question_callback = question_callback
@@ -22,9 +22,19 @@ class DiaryView(ft.Column):
             border=ft.border.all(1, ft.Colors.OUTLINE),
             padding=10,
             visible=False,
+            bottom=self.POPUP_BOTTOM,
             left=0,
-            top=0,
+            right=0,
+            alignment=ft.alignment.bottom_center,
         )
+        self.command_button = ft.FloatingActionButton(
+            icon=ft.Icons.QUESTION_MARK_ROUNDED,
+            on_click=self._toggle_popup,
+        )
+        self.command_button.bottom = 10
+        self.command_button.left = 0
+        self.command_button.right = 0
+        self.command_button.alignment = ft.alignment.bottom_center
         self.editor = ft.TextField(
             multiline=True,
             expand=True,
@@ -33,23 +43,17 @@ class DiaryView(ft.Column):
             text_vertical_align=ft.VerticalAlignment.START,
             autofocus=True,
             border=ft.InputBorder.NONE,
-            on_change=self._on_editor_change,
         )
-        self.stack = ft.Stack([self.editor, self.command_popup], expand=True)
+        self.stack = ft.Stack([self.editor, self.command_popup, self.command_button], expand=True)
         super().__init__(
             [self.stack],
             visible=False,
             expand=True,
         )
 
-    def _on_editor_change(self, e: ft.ControlEvent) -> None:
-        """Toggle command popup visibility when a backslash is typed."""
-        last_char = e.control.value[-1:] if e.control.value else ""
-        self.command_popup.visible = last_char == "\\"
-        if self.command_popup.visible:
-            line_count = len(e.control.value.splitlines())
-            self.command_popup.top = line_count * self.LINE_HEIGHT
-            self.command_popup.left = 0
+    def _toggle_popup(self, e: ft.ControlEvent) -> None:
+        """Show or hide the command popup when the button is pressed."""
+        self.command_popup.visible = not self.command_popup.visible
         if self.page:
             self.update()
 
@@ -58,8 +62,6 @@ class DiaryView(ft.Column):
         if not self.question_callback:
             return
         question = self.question_callback(self.editor.value)
-        if self.editor.value.endswith("\\"):
-            self.editor.value = self.editor.value[:-1]
         if self.editor.value and not self.editor.value.endswith("\n"):
             self.editor.value += "\n"
         self.editor.value += question

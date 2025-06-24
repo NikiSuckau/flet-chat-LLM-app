@@ -35,8 +35,7 @@ See the [Flet publish guide](https://flet.dev/docs/publish/) for signing and dis
 - Chat history context awareness
 - Persistent settings (KoboldCPP URL and LLM parameters)
 - Simple diary stored in an SQLite database
-- Backslash-triggered command popup in the diary view
-- The triggering backslash is removed after executing a command
+- Button-triggered command popup in the diary view
 - Self-reflection question command powered by KoboldCPP
 - Configurable self-reflection prompts and parameters
 - View saved diary entries sorted by date
@@ -111,7 +110,6 @@ Offline documentation for Flet lives under `docs/flet-docs` and can be consulted
   - [x] Chat messages are not correctly displayed if being long. We need to wrap them at the end of the display
 - Diary
   - [x] Inputed text is not temporarily saved when switching to chat view (annoying when you forget to save and switch to chat view)
-  - [ ] Self-reflection question popup via typing "\" does not work if there is text in lines below the cursor
   - [ ] Self-reflection question popup does show if the text is very long
 - Settings menu
   - [ ] Temperature slider are not labelled 
