@@ -1,4 +1,6 @@
 import flet as ft
+from dataclasses import asdict
+from typing import Callable
 
 from backend import (
     AppSettings,
@@ -28,16 +30,78 @@ class FletChatApp:
 
     def build(self, page: ft.Page):
         """Construct all UI controls and wire up event callbacks."""
+        settings_dirty = False
+        settings_snapshot = asdict(self.settings)
+        pending_nav: Callable | None = None
+
+        def mark_dirty(e=None):
+            nonlocal settings_dirty
+            current = asdict(_view_to_settings())
+            settings_dirty = current != settings_snapshot
+
+        def _view_to_settings() -> AppSettings:
+            return AppSettings(
+                api_url=settings_view.get_url(),
+                system_prompt=settings_view.get_system_prompt(),
+                temperature=settings_view.get_temperature(),
+                max_tokens=settings_view.get_max_tokens(),
+                diary_system_prompt=settings_view.get_diary_system_prompt(),
+                diary_prompt=settings_view.get_diary_prompt(),
+                diary_temperature=settings_view.get_diary_temperature(),
+                diary_max_tokens=settings_view.get_diary_max_tokens(),
+                user_name=settings_view.get_user_name(),
+                avatar_color=settings_view.get_avatar_color(),
+            )
+
+        confirm_dialog = ft.AlertDialog(
+            modal=True,
+            title=ft.Text("Unsaved Changes"),
+            content=ft.Text("Discard your changes?"),
+            actions=[
+                ft.TextButton(
+                    "Cancel",
+                    on_click=lambda e: _close_dialog(),
+                ),
+                ft.TextButton(
+                    "Discard",
+                    on_click=lambda e: _discard_changes(),
+                ),
+            ],
+        )
+
+        def _close_dialog() -> None:
+            confirm_dialog.open = False
+            page.update()
+
+        def _discard_changes() -> None:
+            nonlocal settings_dirty, pending_nav
+            confirm_dialog.open = False
+            page.update()
+            settings_dirty = False
+            if pending_nav:
+                pending_nav()
+                pending_nav = None
+
+        def _maybe_navigate(fn):
+            nonlocal pending_nav
+            if settings_view.visible and settings_dirty:
+                pending_nav = fn
+                page.dialog = confirm_dialog
+                confirm_dialog.open = True
+                page.update()
+            else:
+                fn()
+
         def _navigate_drawer(e):
             """Handle drawer navigation between views."""
             if e.control.selected_index == 0:
-                show_chat()
+                _maybe_navigate(show_chat)
             elif e.control.selected_index == 1:
-                show_settings()
+                _maybe_navigate(show_settings)
             elif e.control.selected_index == 2:
-                show_diary()
+                _maybe_navigate(show_diary)
             elif e.control.selected_index == 3:
-                show_saved()
+                _maybe_navigate(show_saved)
             page.close(drawer)
 
         drawer = ft.NavigationDrawer(
@@ -121,6 +185,9 @@ class FletChatApp:
 
         def save_settings_click(e):
             """Persist the edited settings and notify the user."""
+            nonlocal settings_snapshot, settings_dirty
+            if not settings_dirty:
+                return
             self.backend.api_url = settings_view.get_url()
             self.backend.system_prompt = settings_view.get_system_prompt()
             self.backend.temperature = settings_view.get_temperature()
@@ -141,10 +208,12 @@ class FletChatApp:
             self.settings.diary_max_tokens = settings_view.get_diary_max_tokens()
             chat_view.set_user(self.settings.user_name)
             save_settings(self.settings)
+            settings_snapshot = asdict(self.settings)
+            settings_dirty = False
             page.snack_bar = ft.SnackBar(ft.Text("Settings saved"), open=True)
             page.update()
 
-        settings_view = SettingsView(self.settings, save_settings_click)
+        settings_view = SettingsView(self.settings, mark_dirty)
 
         diary_view = DiaryView(self.backend.generate_diary_question)
 
@@ -182,6 +251,9 @@ class FletChatApp:
             settings_view.set_diary_max_tokens(self.backend.diary_max_tokens)
             settings_view.set_user_name(self.settings.user_name)
             settings_view.set_avatar_color(self.settings.avatar_color)
+            nonlocal settings_snapshot, settings_dirty
+            settings_snapshot = asdict(self.settings)
+            settings_dirty = False
             chat_view.visible = False
             diary_view.visible = False
             saved_diary_view.visible = False

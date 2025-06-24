@@ -42,6 +42,7 @@ See the [Flet publish guide](https://flet.dev/docs/publish/) for signing and dis
 - View saved diary entries sorted by date
 - Tap a saved entry to reopen and edit it
 - Delete saved entries with a long press and confirmation popup
+- Warn about unsaved settings when leaving the settings view and show a snackbar after saving
 - User data is stored under the `storage/` folder
 
 ## Code Structure
@@ -114,5 +115,5 @@ Offline documentation for Flet lives under `docs/flet-docs` and can be consulted
   - [ ] Self-reflection question popup via typing "\" does not work if there is text in lines below the cursor
   - [ ] Self-reflection question popup does show if the text is very long
 - Settings menu
-  - [ ] Temperature slider are not labelled 
-  - [ ] Not automatically saving settings when changing and not pressing "Save" (annoying when you forget to save and switch to chat view)
+  - [ ] Temperature slider are not labelled
+  - [x] Not automatically saving settings when changing and not pressing "Save" (annoying when you forget to save and switch to chat view)

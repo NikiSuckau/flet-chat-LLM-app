@@ -6,13 +6,22 @@ from backend import AppSettings
 class SettingsView(ft.Column):
     """View for editing application settings."""
 
-    def __init__(self, settings: AppSettings, save_callback) -> None:
-        """Create settings form."""
+    def __init__(self, settings: AppSettings, change_callback=None) -> None:
+        """Create settings form.
+
+        Parameters
+        ----------
+        settings:
+            Current application settings.
+        change_callback:
+            Optional callback invoked whenever a field value changes.
+        """
         self.settings = settings
         self.user_field = ft.TextField(
             label="User Name",
             value=self.settings.user_name,
             expand=True,
+            on_change=change_callback,
         )
         self.color_dropdown = ft.Dropdown(
             label="Avatar Color",
@@ -27,17 +36,20 @@ class SettingsView(ft.Column):
                 ft.dropdown.Option("red"),
             ],
             value=self.settings.avatar_color,
+            on_change=change_callback,
         )
         self.url_field = ft.TextField(
             label="KoboldCPP URL",
             value=self.settings.api_url,
             expand=True,
+            on_change=change_callback,
         )
         self.prompt_field = ft.TextField(
             label="System Prompt",
             multiline=True,
             value=self.settings.system_prompt,
             expand=True,
+            on_change=change_callback,
         )
         self.temp_slider = ft.Slider(
             min=0.0,
@@ -45,23 +57,27 @@ class SettingsView(ft.Column):
             divisions=10,
             value=self.settings.temperature,
             label="{value}",
+            on_change=change_callback,
         )
         self.tokens_field = ft.TextField(
             label="Max Tokens",
             value=str(self.settings.max_tokens),
             width=150,
+            on_change=change_callback,
         )
         self.diary_sys_field = ft.TextField(
             label="Diary System Prompt",
             multiline=True,
             value=self.settings.diary_system_prompt,
             expand=True,
+            on_change=change_callback,
         )
         self.diary_prompt_field = ft.TextField(
             label="Diary Prompt",
             multiline=True,
             value=self.settings.diary_prompt,
             expand=True,
+            on_change=change_callback,
         )
         self.diary_temp_slider = ft.Slider(
             min=0.0,
@@ -69,11 +85,13 @@ class SettingsView(ft.Column):
             divisions=10,
             value=self.settings.diary_temperature,
             label="{value}",
+            on_change=change_callback,
         )
         self.diary_tokens_field = ft.TextField(
             label="Diary Max Tokens",
             value=str(self.settings.diary_max_tokens),
             width=150,
+            on_change=change_callback,
         )
 
         chat_tile = ft.ExpansionTile(
