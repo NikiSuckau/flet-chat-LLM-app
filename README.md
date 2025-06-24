@@ -41,7 +41,7 @@ See the [Flet publish guide](https://flet.dev/docs/publish/) for signing and dis
 - Configurable self-reflection prompts and parameters
 - View saved diary entries sorted by date
 - Tap a saved entry to reopen and edit it
- - Delete saved entries with a long press and confirmation popup
+- Delete saved entries with a long press and confirmation popup
 - User data is stored under the `storage/` folder
 
 ## Code Structure
