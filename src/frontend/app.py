@@ -35,7 +35,6 @@ class FletChatApp:
             elif e.control.selected_index == 1:
                 show_settings()
             elif e.control.selected_index == 2:
-                diary_view.clear_text()
                 show_diary()
             elif e.control.selected_index == 3:
                 show_saved()
