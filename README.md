@@ -91,6 +91,7 @@ Offline documentation for Flet lives under `docs/flet-docs` and can be consulted
   - [ ] Save chat 
   - [ ] Long term memory via Langchain (`LangMem`)
   - [ ] fix streaming messages, despite ```"stream": True``` in backend.py it does not work
+  - [ ] Read and print which model is available (```curl http://localhost:5001/v1/models``` gives a list of available models)
   - [ ] Markdown rendering
 
 - Diary functionality, to let users write and save diary entries (Can be used later on as context for the LLM through Langchain)
@@ -109,5 +110,9 @@ Offline documentation for Flet lives under `docs/flet-docs` and can be consulted
 - Chat
   - [x] Chat messages are not correctly displayed if being long. We need to wrap them at the end of the display
 - Diary
+  - [ ] Inputed text is not temporarily saved when switching to chat view (annoying when you forget to save and switch to chat view)
   - [ ] Self-reflection question popup via typing "\" does not work if there is text in lines below the cursor
   - [ ] Self-reflection question popup does show if the text is very long
+- Settings menu
+  - [ ] Temperature slider are not labelled 
+  - [ ] Not automatically saving settings when changing and not pressing "Save" (annoying when you forget to save and switch to chat view)

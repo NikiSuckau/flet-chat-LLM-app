@@ -1,7 +1,7 @@
 {
   "api_url": "http://localhost:5001/v1/chat/completions",
   "system_prompt": "Du bist ein hilfreicher Assistent.",
-  "temperature": 0.8,
+  "temperature": 0.5,
   "max_tokens": 200,
   "diary_system_prompt": "Du bist ein hilfreicher Assistent.",
   "diary_prompt": "Stelle eine kurze, selbstreflektierende Frage basierend auf folgendem Tagebucheintrag:",
