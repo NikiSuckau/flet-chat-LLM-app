@@ -147,7 +147,7 @@ class FletChatApp:
         settings_view = SettingsView(self.settings, save_settings_click)
 
         diary_view = DiaryView(
-            self.backend.generate_diary_question,
+            self.backend.stream_diary_question,
             save_diary_click,
         )
 

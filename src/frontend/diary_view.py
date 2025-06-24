@@ -1,4 +1,4 @@
-from typing import Callable, Optional
+from typing import Callable, Iterable, Optional
 
 from backend import DiaryEntry
 
@@ -13,7 +13,7 @@ class DiaryView(ft.Column):
 
     def __init__(
         self,
-        question_callback: Optional[Callable[[str], str]] = None,
+        question_callback: Optional[Callable[[str], Iterable[str] | str]] = None,
         save_callback: Optional[Callable[[ft.ControlEvent], None]] = None,
     ) -> None:
         self.question_callback = question_callback
@@ -78,10 +78,27 @@ class DiaryView(ft.Column):
         """Insert a generated question below the current diary text."""
         if not self.question_callback:
             return
-        question = self.question_callback(self.editor.value)
+        result = self.question_callback(self.editor.value)
+
+        if isinstance(result, str) or not hasattr(result, "__iter__"):
+            question = str(result)
+            if self.editor.value and not self.editor.value.endswith("\n"):
+                self.editor.value += "\n"
+            self.editor.value += question
+            self.command_popup.visible = False
+            if self.page:
+                self.update()
+            return
+
         if self.editor.value and not self.editor.value.endswith("\n"):
             self.editor.value += "\n"
-        self.editor.value += question
+        prefix = self.editor.value
+        question = ""
+        for delta in result:
+            question += delta
+            self.editor.value = prefix + question
+            if self.page:
+                self.update()
         self.command_popup.visible = False
         if self.page:
             self.update()

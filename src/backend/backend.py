@@ -92,19 +92,21 @@ class ChatBackend:
         """Return the full assistant reply after streaming completes."""
         return "".join(self.stream_reply(max_tokens=max_tokens, temperature=temperature))
 
-    def generate_diary_question(
+    def stream_diary_question(
         self,
         diary_text: str,
         prompt: str | None = None,
         max_tokens: int | None = None,
         temperature: float | None = None,
         system_prompt: str | None = None,
-    ) -> str:
-        """Generate a self-reflection question for a diary entry."""
+    ):
+        """Yield a diary self-reflection question token by token."""
+
         prompt_text = (prompt or self.diary_prompt) + f"{diary_text}"
         max_tokens = max_tokens if max_tokens is not None else self.diary_max_tokens
         temperature = temperature if temperature is not None else self.diary_temperature
         system_prompt = system_prompt or self.diary_system_prompt
+
         try:
             response = requests.post(
                 self.api_url,
@@ -116,11 +118,47 @@ class ChatBackend:
                     ],
                     "max_tokens": max_tokens,
                     "temperature": temperature,
+                    "stream": True,
                 },
                 timeout=120,
+                stream=True,
             )
             response.raise_for_status()
-            data = response.json()
-            return data["choices"][0]["message"]["content"].strip()
         except Exception as ex:  # pragma: no cover - network errors
-            return f"[error connecting to KoboldCPP: {ex}]"
+            yield f"[error connecting to KoboldCPP: {ex}]"
+            return
+
+        for chunk in response.iter_lines(decode_unicode=True):
+            if not chunk:
+                continue
+            if chunk.startswith("data:"):
+                json_str = chunk[len("data:"):].strip()
+                try:
+                    j = json.loads(json_str)
+                except json.JSONDecodeError:
+                    continue
+                delta = j["choices"][0]["delta"].get("content", "")
+                if delta:
+                    yield delta
+                if j["choices"][0].get("finish_reason") == "stop":
+                    break
+
+    def generate_diary_question(
+        self,
+        diary_text: str,
+        prompt: str | None = None,
+        max_tokens: int | None = None,
+        temperature: float | None = None,
+        system_prompt: str | None = None,
+    ) -> str:
+        """Return the full diary question after streaming completes."""
+
+        return "".join(
+            self.stream_diary_question(
+                diary_text,
+                prompt=prompt,
+                max_tokens=max_tokens,
+                temperature=temperature,
+                system_prompt=system_prompt,
+            )
+        )

@@ -22,9 +22,14 @@ def test_popup_position_constant():
 def test_insert_question_appends_text():
     called = []
 
-    def callback(text: str) -> str:
+    def callback(text: str):
         called.append(text)
-        return "What do you feel right now?"
+        yield "What "
+        yield "do "
+        yield "you "
+        yield "feel "
+        yield "right "
+        yield "now?"
 
     view = DiaryView(callback)
     view.editor.value = "Today was good"
