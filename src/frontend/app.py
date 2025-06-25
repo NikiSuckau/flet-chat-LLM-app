@@ -129,6 +129,12 @@ class FletChatApp:
             self.backend.diary_prompt = settings_view.get_diary_prompt()
             self.backend.diary_temperature = settings_view.get_diary_temperature()
             self.backend.diary_max_tokens = settings_view.get_diary_max_tokens()
+            self.backend.summary_system_prompt = (
+                settings_view.get_summary_system_prompt()
+            )
+            self.backend.summary_prompt = settings_view.get_summary_prompt()
+            self.backend.summary_temperature = settings_view.get_summary_temperature()
+            self.backend.summary_max_tokens = settings_view.get_summary_max_tokens()
             self.settings.user_name = settings_view.get_user_name()
             self.settings.avatar_color = settings_view.get_avatar_color()
             self.settings.api_url = settings_view.get_url()
@@ -139,6 +145,14 @@ class FletChatApp:
             self.settings.diary_prompt = settings_view.get_diary_prompt()
             self.settings.diary_temperature = settings_view.get_diary_temperature()
             self.settings.diary_max_tokens = settings_view.get_diary_max_tokens()
+            self.settings.summary_system_prompt = (
+                settings_view.get_summary_system_prompt()
+            )
+            self.settings.summary_prompt = settings_view.get_summary_prompt()
+            self.settings.summary_temperature = (
+                settings_view.get_summary_temperature()
+            )
+            self.settings.summary_max_tokens = settings_view.get_summary_max_tokens()
             chat_view.set_user(self.settings.user_name)
             save_settings(self.settings)
             page.snack_bar = ft.SnackBar(ft.Text("Settings saved"), open=True)
@@ -146,9 +160,24 @@ class FletChatApp:
 
         settings_view = SettingsView(self.settings, save_settings_click)
 
+        def summarize_previous(_: str):
+            entries = load_entries()
+            target: str | None = None
+            if diary_view.current_entry_id is not None:
+                for i, entry in enumerate(entries):
+                    if entry.id == diary_view.current_entry_id and i > 0:
+                        target = entries[i - 1].text
+                        break
+            elif entries:
+                target = entries[-1].text
+            if not target:
+                return ""
+            return self.backend.stream_diary_summary(target)
+
         diary_view = DiaryView(
             self.backend.stream_diary_question,
             save_diary_click,
+            summarize_previous,
         )
 
         def open_saved_entry(entry: DiaryEntry) -> None:
@@ -183,6 +212,14 @@ class FletChatApp:
             settings_view.set_diary_prompt(self.backend.diary_prompt)
             settings_view.set_diary_temperature(self.backend.diary_temperature)
             settings_view.set_diary_max_tokens(self.backend.diary_max_tokens)
+            settings_view.set_summary_system_prompt(
+                self.backend.summary_system_prompt
+            )
+            settings_view.set_summary_prompt(self.backend.summary_prompt)
+            settings_view.set_summary_temperature(
+                self.backend.summary_temperature
+            )
+            settings_view.set_summary_max_tokens(self.backend.summary_max_tokens)
             settings_view.set_user_name(self.settings.user_name)
             settings_view.set_avatar_color(self.settings.avatar_color)
             chat_view.visible = False

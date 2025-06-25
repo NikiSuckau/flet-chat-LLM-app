@@ -17,6 +17,7 @@ def test_popup_visibility_toggle():
 def test_popup_position_constant():
     view = DiaryView()
     assert view.command_popup.bottom == DiaryView.POPUP_BOTTOM
+    assert len(view.command_popup.content.controls) == 2
 
 
 def test_insert_question_appends_text():
@@ -36,6 +37,21 @@ def test_insert_question_appends_text():
     view._insert_question(None)
     assert called == ["Today was good"]
     assert view.editor.value.endswith("What do you feel right now?")
+
+
+def test_insert_summary_prepends_text():
+    called = []
+
+    def callback(text: str):
+        called.append(text)
+        yield "Sum"
+        yield "mary"
+
+    view = DiaryView(None, None, callback)
+    view.editor.value = "Entry"
+    view._insert_summary(None)
+    assert called == ["Entry"]
+    assert view.editor.value.startswith("Summary")
 
 
 

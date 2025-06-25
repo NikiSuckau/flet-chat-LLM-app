@@ -37,6 +37,7 @@ See the [Flet publish guide](https://flet.dev/docs/publish/) for signing and dis
 - Simple diary stored in an SQLite database
 - Diary view bottom bar with command and save buttons
 - Self-reflection question command powered by KoboldCPP
+- Summarize previous diary entry command
 - Diary questions stream live as they are generated
 - Configurable self-reflection prompts and parameters
 - View saved diary entries sorted by date

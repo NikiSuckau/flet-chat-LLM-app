@@ -44,3 +44,43 @@ def test_stream_diary_question_and_generate(monkeypatch):
 
     monkeypatch.setattr(requests, "post", fake_post)
     assert backend.generate_diary_question("text") == "Hello"
+
+
+def test_stream_diary_summary_and_generate(monkeypatch):
+    chunks = [
+        'data: {"choices":[{"delta":{"content":"Sum"}}]}',
+        'data: {"choices":[{"delta":{"content":"mary"},"finish_reason":"stop"}]}',
+    ]
+    captured = {}
+
+    def fake_post(url, json, timeout, stream):
+        captured.update(json)
+
+        class Resp:
+            def raise_for_status(self):
+                pass
+
+            def iter_lines(self, decode_unicode=False):
+                for line in chunks:
+                    yield line if decode_unicode else line.encode()
+
+        return Resp()
+
+    monkeypatch.setattr(requests, "post", fake_post)
+    backend = ChatBackend(
+        "http://api",
+        summary_system_prompt="SSP",
+        summary_prompt="SP\n",
+        summary_temperature=0.3,
+        summary_max_tokens=20,
+    )
+
+    result = "".join(backend.stream_diary_summary("text"))
+    assert result == "Summary"
+    assert captured["messages"][0]["content"] == "SSP"
+    assert captured["messages"][1]["content"] == "SP\ntext"
+    assert captured["temperature"] == 0.3
+    assert captured["max_tokens"] == 20
+
+    monkeypatch.setattr(requests, "post", fake_post)
+    assert backend.generate_diary_summary("text") == "Summary"

@@ -15,14 +15,23 @@ class DiaryView(ft.Column):
         self,
         question_callback: Optional[Callable[[str], Iterable[str] | str]] = None,
         save_callback: Optional[Callable[[ft.ControlEvent], None]] = None,
+        summary_callback: Optional[Callable[[str], Iterable[str] | str]] = None,
     ) -> None:
         self.question_callback = question_callback
         self.save_callback = save_callback
+        self.summary_callback = summary_callback
         self.current_entry_id: int | None = None
         self.current_entry_timestamp: str | None = None
         self.command_popup = ft.Container(
             content=ft.Column(
-                [ft.TextButton("Self-reflection question", on_click=self._insert_question)]
+                [
+                    ft.TextButton(
+                        "Self-reflection question", on_click=self._insert_question
+                    ),
+                    ft.TextButton(
+                        "Summarize previous entry", on_click=self._insert_summary
+                    ),
+                ]
             ),
             bgcolor=ft.Colors.WHITE,
             border=ft.border.all(1, ft.Colors.OUTLINE),
@@ -97,6 +106,34 @@ class DiaryView(ft.Column):
         for delta in result:
             question += delta
             self.editor.value = prefix + question
+            if self.page:
+                self.update()
+        self.command_popup.visible = False
+        if self.page:
+            self.update()
+
+    def _insert_summary(self, e: ft.ControlEvent) -> None:
+        """Insert a summary above the current diary text."""
+        if not self.summary_callback:
+            return
+        result = self.summary_callback(self.editor.value)
+
+        if isinstance(result, str) or not hasattr(result, "__iter__"):
+            summary = str(result)
+            self.editor.value = (
+                summary + "\n" + self.editor.value if self.editor.value else summary
+            )
+            self.command_popup.visible = False
+            if self.page:
+                self.update()
+            return
+
+        summary = ""
+        for delta in result:
+            summary += delta
+            self.editor.value = (
+                summary + "\n" + self.editor.value if self.editor.value else summary
+            )
             if self.page:
                 self.update()
         self.command_popup.visible = False
