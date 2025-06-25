@@ -14,15 +14,22 @@ class DiaryView(ft.Column):
     def __init__(
         self,
         question_callback: Optional[Callable[[str], Iterable[str] | str]] = None,
+        summary_callback: Optional[Callable[[str], Iterable[str] | str]] = None,
+        previous_entry_func: Optional[Callable[[], Optional[str]]] = None,
         save_callback: Optional[Callable[[ft.ControlEvent], None]] = None,
     ) -> None:
         self.question_callback = question_callback
+        self.summary_callback = summary_callback
+        self.previous_entry_func = previous_entry_func
         self.save_callback = save_callback
         self.current_entry_id: int | None = None
         self.current_entry_timestamp: str | None = None
         self.command_popup = ft.Container(
             content=ft.Column(
-                [ft.TextButton("Self-reflection question", on_click=self._insert_question)]
+                [
+                    ft.TextButton("Self-reflection question", on_click=self._insert_question),
+                    ft.TextButton("Summarize previous entry", on_click=self._insert_summary),
+                ]
             ),
             bgcolor=ft.Colors.WHITE,
             border=ft.border.all(1, ft.Colors.OUTLINE),
@@ -99,6 +106,25 @@ class DiaryView(ft.Column):
             self.editor.value = prefix + question
             if self.page:
                 self.update()
+        self.command_popup.visible = False
+        if self.page:
+            self.update()
+
+    def _insert_summary(self, e: ft.ControlEvent) -> None:
+        """Prepend a summary of the previous entry to the editor."""
+        if not self.summary_callback or not self.previous_entry_func:
+            return
+        prev_text = self.previous_entry_func()
+        if not prev_text:
+            return
+        result = self.summary_callback(prev_text)
+        if hasattr(result, "__iter__") and not isinstance(result, str):
+            summary = "".join(result)
+        else:
+            summary = str(result)
+        if summary and not summary.endswith("\n"):
+            summary += "\n"
+        self.editor.value = summary + self.editor.value
         self.command_popup.visible = False
         if self.page:
             self.update()

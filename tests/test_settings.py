@@ -17,6 +17,10 @@ def test_load_settings_defaults(tmp_path):
     assert settings.diary_prompt == ChatBackend.DEFAULT_DIARY_PROMPT
     assert settings.diary_temperature == 0.7
     assert settings.diary_max_tokens == 50
+    assert settings.summary_system_prompt == ChatBackend.DEFAULT_SYSTEM_PROMPT
+    assert settings.summary_prompt == ChatBackend.DEFAULT_SUMMARY_PROMPT
+    assert settings.summary_temperature == 0.7
+    assert settings.summary_max_tokens == 50
     assert settings.user_name == "User"
     assert settings.avatar_color == "blue"
 
@@ -32,6 +36,10 @@ def test_save_and_load_settings(tmp_path):
         diary_prompt='dp',
         diary_temperature=0.6,
         diary_max_tokens=75,
+        summary_system_prompt='ssp',
+        summary_prompt='sp',
+        summary_temperature=0.5,
+        summary_max_tokens=40,
         user_name="Alice",
         avatar_color="red",
     )

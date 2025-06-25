@@ -20,6 +20,10 @@ class AppSettings:
     diary_prompt: str = ChatBackend.DEFAULT_DIARY_PROMPT
     diary_temperature: float = 0.7
     diary_max_tokens: int = 50
+    summary_system_prompt: str = ChatBackend.DEFAULT_SYSTEM_PROMPT
+    summary_prompt: str = ChatBackend.DEFAULT_SUMMARY_PROMPT
+    summary_temperature: float = 0.7
+    summary_max_tokens: int = 50
     user_name: str = "User"
     avatar_color: str = "blue"
 

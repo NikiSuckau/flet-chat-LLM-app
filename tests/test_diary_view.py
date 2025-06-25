@@ -38,4 +38,29 @@ def test_insert_question_appends_text():
     assert view.editor.value.endswith("What do you feel right now?")
 
 
+def test_insert_summary_prepends_text():
+    prev_called = []
+
+    def prev_entry():
+        prev_called.append(True)
+        return "Yesterday was bad"
+
+    def summary_callback(text: str):
+        assert text == "Yesterday was bad"
+        return "Summary"
+
+    view = DiaryView(None, summary_callback, prev_entry)
+    view.editor.value = "Current entry"
+    view._insert_summary(None)
+    assert prev_called == [True]
+    assert view.editor.value.startswith("Summary")
+    assert view.editor.value.endswith("Current entry")
+
+
+def test_command_popup_contains_two_buttons():
+    view = DiaryView()
+    column = view.command_popup.content
+    assert len(column.controls) == 2
+
+
 

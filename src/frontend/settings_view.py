@@ -75,6 +75,30 @@ class SettingsView(ft.Column):
             value=str(self.settings.diary_max_tokens),
             width=150,
         )
+        self.summary_sys_field = ft.TextField(
+            label="Summary System Prompt",
+            multiline=True,
+            value=self.settings.summary_system_prompt,
+            expand=True,
+        )
+        self.summary_prompt_field = ft.TextField(
+            label="Summary Prompt",
+            multiline=True,
+            value=self.settings.summary_prompt,
+            expand=True,
+        )
+        self.summary_temp_slider = ft.Slider(
+            min=0.0,
+            max=1.0,
+            divisions=10,
+            value=self.settings.summary_temperature,
+            label="{value}",
+        )
+        self.summary_tokens_field = ft.TextField(
+            label="Summary Max Tokens",
+            value=str(self.settings.summary_max_tokens),
+            width=150,
+        )
 
         chat_tile = ft.ExpansionTile(
             title=ft.Text("Chat LLM settings"),
@@ -97,6 +121,17 @@ class SettingsView(ft.Column):
             ],
         )
 
+        summary_tile = ft.ExpansionTile(
+            title=ft.Text("Summary LLM settings"),
+            initially_expanded=False,
+            controls=[
+                self.summary_sys_field,
+                self.summary_prompt_field,
+                self.summary_temp_slider,
+                self.summary_tokens_field,
+            ],
+        )
+
         list_view = ft.ListView(
             controls=[
                 self.user_field,
@@ -104,6 +139,7 @@ class SettingsView(ft.Column):
                 self.url_field,
                 chat_tile,
                 diary_tile,
+                summary_tile,
             ],
             expand=True,
             spacing=10,
@@ -184,6 +220,41 @@ class SettingsView(ft.Column):
     def set_diary_max_tokens(self, value: int) -> None:
         """Update diary max tokens field."""
         self.diary_tokens_field.value = str(value)
+
+    def get_summary_system_prompt(self) -> str:
+        """Return the summary system prompt."""
+        return self.summary_sys_field.value
+
+    def set_summary_system_prompt(self, text: str) -> None:
+        """Update the summary system prompt field."""
+        self.summary_sys_field.value = text
+
+    def get_summary_prompt(self) -> str:
+        """Return the summary prompt."""
+        return self.summary_prompt_field.value
+
+    def set_summary_prompt(self, text: str) -> None:
+        """Update the summary prompt field."""
+        self.summary_prompt_field.value = text
+
+    def get_summary_temperature(self) -> float:
+        """Return summary temperature."""
+        return float(self.summary_temp_slider.value)
+
+    def set_summary_temperature(self, value: float) -> None:
+        """Update summary temperature slider."""
+        self.summary_temp_slider.value = value
+
+    def get_summary_max_tokens(self) -> int:
+        """Return summary max tokens."""
+        try:
+            return int(self.summary_tokens_field.value)
+        except ValueError:
+            return 0
+
+    def set_summary_max_tokens(self, value: int) -> None:
+        """Update summary max tokens field."""
+        self.summary_tokens_field.value = str(value)
 
     def get_user_name(self) -> str:
         """Return the configured user name."""
