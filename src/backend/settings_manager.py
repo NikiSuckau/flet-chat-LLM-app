@@ -1,17 +1,17 @@
-from dataclasses import asdict, dataclass
 import json
 import os
+from dataclasses import asdict, dataclass
 
 from .backend import ChatBackend
 
-
-STORAGE_DIR = "storage"
+STORAGE_DIR = "storage/data"
 SETTINGS_FILE = os.path.join(STORAGE_DIR, "settings.json")
 
 
 @dataclass
 class AppSettings:
     """User configurable settings persisted between runs."""
+
     api_url: str = "http://localhost:5001/v1/chat/completions"
     system_prompt: str = ChatBackend.DEFAULT_SYSTEM_PROMPT
     temperature: float = 0.8

@@ -1,9 +1,9 @@
-from dataclasses import dataclass
-from datetime import datetime
 import os
 import sqlite3
+from dataclasses import dataclass
+from datetime import datetime
 
-DIARY_DIR = "storage"
+DIARY_DIR = "storage/data"
 DIARY_DB = os.path.join(DIARY_DIR, "diary.db")
 
 
@@ -14,6 +14,7 @@ class DiaryEntry:
     text: str
     timestamp: str
     id: int | None = None
+
 
 def _ensure_table(conn: sqlite3.Connection) -> None:
     conn.execute(
