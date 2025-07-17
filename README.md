@@ -33,6 +33,7 @@ See the [Flet publish guide](https://flet.dev/docs/publish/) for signing and dis
 
 - Chat with KoboldCPP via a clean Flet UI
 - Chat history context awareness
+- **Long-term memory system for personalized responses**
 - Persistent settings (KoboldCPP URL and LLM parameters)
 - Simple diary stored in an SQLite database
 - Diary view bottom bar with command and save buttons
@@ -45,6 +46,18 @@ See the [Flet publish guide](https://flet.dev/docs/publish/) for signing and dis
 - Delete saved entries with a long press and confirmation popup
 - User data is stored under the `storage/` folder
 
+## Long-term Memory
+
+The app now includes an intelligent long-term memory system that remembers information about you across conversations:
+
+- **User Preferences**: Remembers your preferences (e.g., "I prefer dark mode themes")
+- **Personal Information**: Stores details you share about yourself (e.g., "My name is Alice", "I work as a developer")
+- **Goals and Interests**: Tracks your learning goals and interests (e.g., "I want to learn Python", "I'm interested in AI")
+
+The memory system automatically extracts important information from your conversations and includes relevant context in future chats, providing more personalized and helpful responses. All memory data is stored locally in `storage/data/memory.db`.
+
+You can enable or disable the memory system in the settings (enabled by default).
+
 ## Code Structure
 
 The application code lives under the `src` folder and is split into two main
@@ -52,8 +65,9 @@ packages:
 
 - `backend/` – Contains logic unrelated to the UI. `backend.py` stores chat
   history and talks to the KoboldCPP API, `models.py` defines the `Message`
-  dataclass, while `settings_manager.py` loads and saves the persistent
-  `AppSettings`.
+  dataclass, `settings_manager.py` loads and saves the persistent
+  `AppSettings`, and `memory_manager.py` handles long-term memory extraction
+  and storage.
 - `frontend/` – All Flet UI components. `app.py` wires everything together,
   `chat_view.py` displays the message list, `chat_message.py` renders individual
   messages, and `settings_view.py` hosts the settings form.
@@ -89,8 +103,8 @@ Offline documentation for Flet lives under `docs/flet-docs` and can be consulted
   - [x] Bring in last messages as context
   - [ ] Make past messages of LLM or user editable
   - [ ] Let LLM regenerate last message
-  - [ ] Save chat 
-  - [ ] Long term memory via Langchain (`LangMem`)
+  - [x] Save chat 
+  - [x] Long term memory via LangChain (`LangMem`)
   - [x] fix streaming messages, despite ```"stream": True``` in backend.py it does not work
   - [ ] Read and print which model is available (```curl http://localhost:5001/v1/models``` gives a list of available models)
   - [ ] Markdown rendering

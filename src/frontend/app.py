@@ -93,7 +93,7 @@ class FletChatApp:
             page.update()
 
             bot_reply = ""
-            for delta in self.backend.stream_reply():
+            for delta in self.backend.stream_reply(user_name=user_name):
                 bot_reply += delta
                 msg_control.text_control.value = bot_reply
                 page.update()
@@ -133,6 +133,10 @@ class FletChatApp:
             self.backend.summary_prompt = settings_view.get_summary_prompt()
             self.backend.summary_temperature = settings_view.get_summary_temperature()
             self.backend.summary_max_tokens = settings_view.get_summary_max_tokens()
+            # Update memory setting if it exists in settings_view
+            if hasattr(settings_view, 'get_enable_memory'):
+                self.backend.enable_memory = settings_view.get_enable_memory()
+                self.settings.enable_memory = settings_view.get_enable_memory()
             self.settings.user_name = settings_view.get_user_name()
             self.settings.avatar_color = settings_view.get_avatar_color()
             self.settings.api_url = settings_view.get_url()

@@ -1,5 +1,8 @@
 import json
 import requests
+from typing import List, Dict
+
+from .memory_manager import MemoryManager
 
 
 class ChatBackend:
@@ -27,6 +30,7 @@ class ChatBackend:
         summary_prompt: str | None = None,
         summary_temperature: float = 0.7,
         summary_max_tokens: int = 50,
+        enable_memory: bool = True,
     ) -> None:
         """Initialize backend with all LLM parameters."""
         self.api_url = api_url
@@ -41,6 +45,11 @@ class ChatBackend:
         self.summary_prompt = summary_prompt or self.DEFAULT_SUMMARY_PROMPT
         self.summary_temperature = summary_temperature
         self.summary_max_tokens = summary_max_tokens
+        self.enable_memory = enable_memory
+        
+        # Initialize memory manager
+        self.memory_manager = MemoryManager() if enable_memory else None
+        
         # Seed conversation with a system prompt so the LLM knows how to behave
         self.chat_history = [
             {"role": "system", "content": self.system_prompt}
@@ -54,20 +63,41 @@ class ChatBackend:
         """Append an assistant message to the in-memory history."""
         self.chat_history.append({"role": "assistant", "content": text})
 
+    def get_context_enriched_messages(self, user_name: str = "User") -> List[Dict[str, str]]:
+        """Get chat messages enriched with relevant long-term memory context."""
+        messages = self.chat_history.copy()
+        
+        if self.memory_manager and self.enable_memory:
+            # Process conversation to extract and store memories
+            memory_context = self.memory_manager.process_conversation(messages, user_name)
+            
+            # If we have relevant memory context, add it to the system prompt
+            if memory_context:
+                enhanced_system_prompt = f"{self.system_prompt}\n\n{memory_context}"
+                # Update the system message with memory context
+                messages[0] = {"role": "system", "content": enhanced_system_prompt}
+        
+        return messages
+
     def stream_reply(
         self,
         max_tokens: int | None = None,
         temperature: float | None = None,
+        user_name: str = "User",
     ):
         """Yield assistant reply tokens as they arrive from the API."""
         max_tokens = max_tokens if max_tokens is not None else self.max_tokens
         temperature = temperature if temperature is not None else self.temperature
+        
+        # Get messages enriched with memory context
+        messages = self.get_context_enriched_messages(user_name)
+        
         try:
             response = requests.post(
                 self.api_url,
                 json={
                     "model": "kobold_chat_v2",
-                    "messages": self.chat_history,
+                    "messages": messages,
                     "max_tokens": max_tokens,
                     "temperature": temperature,
                     "stream": True,
@@ -99,9 +129,10 @@ class ChatBackend:
         self,
         max_tokens: int | None = None,
         temperature: float | None = None,
+        user_name: str = "User",
     ) -> str:
         """Return the full assistant reply after streaming completes."""
-        return "".join(self.stream_reply(max_tokens=max_tokens, temperature=temperature))
+        return "".join(self.stream_reply(max_tokens=max_tokens, temperature=temperature, user_name=user_name))
 
     def stream_diary_question(
         self,
