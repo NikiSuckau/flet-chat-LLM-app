@@ -26,6 +26,7 @@ class AppSettings:
     summary_max_tokens: int = 50
     user_name: str = "User"
     avatar_color: str = "blue"
+    enable_memory: bool = True
 
 
 def load_settings(path: str = SETTINGS_FILE) -> AppSettings:
